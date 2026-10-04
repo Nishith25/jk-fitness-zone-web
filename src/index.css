@@ -4257,3 +4257,305 @@ body {
   border-color: #303030 !important;
   color: #e0e0e0 !important;
 }
+
+/* =========================================================
+   TRAINER CUSTOMER SECTION - MAIN FOCUS
+========================================================= */
+
+.trainer-customers-section {
+  padding: 24px !important;
+}
+
+.section-subtext {
+  margin: 7px 0 0;
+  color: #777;
+  font-size: 11px;
+}
+
+.customer-count-box {
+  min-width: 92px;
+  padding: 12px 14px;
+  border: 1px solid #242424;
+  border-radius: 6px;
+  background: #0e0e0e;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.customer-count-box span {
+  color: #707070;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.customer-count-box strong {
+  margin-top: 5px;
+  color: #fff;
+  font-size: 22px;
+}
+
+.trainer-customer-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.trainer-customer-card {
+  padding: 18px;
+  border: 1px solid #242424;
+  border-radius: 6px;
+  background: #0c0c0c;
+}
+
+.trainer-customer-head {
+  padding-bottom: 14px;
+  border-bottom: 1px solid #1d1d1d;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.trainer-customer-head > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.trainer-customer-label {
+  color: #666;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.trainer-customer-head strong {
+  margin-top: 5px;
+  color: #fff;
+  font-size: 18px;
+}
+
+.trainer-customer-payment {
+  padding: 5px 8px;
+  border: 1px solid #2a2a2a;
+  border-radius: 5px;
+  background: #111;
+  color: #ddd;
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.trainer-customer-metrics {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.trainer-customer-metrics > div {
+  min-width: 0;
+  min-height: 96px;
+  padding: 13px;
+  border: 1px solid #1f1f1f;
+  border-radius: 5px;
+  background: #0f0f0f;
+  display: flex;
+  flex-direction: column;
+}
+
+.trainer-customer-metrics span,
+.trainer-customer-footer span {
+  color: #6f6f6f;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.trainer-customer-metrics strong {
+  margin-top: 7px;
+  color: #fff;
+  font-size: 17px;
+}
+
+.trainer-customer-metrics small {
+  margin-top: 6px;
+  color: #737373;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.trainer-share-box {
+  border-color: #303030 !important;
+}
+
+.trainer-share-box strong {
+  font-size: 20px !important;
+}
+
+.trainer-customer-footer {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.trainer-customer-footer > div {
+  padding: 12px 13px;
+  border: 1px solid #1e1e1e;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.trainer-customer-footer strong {
+  color: #e9e9e9;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .trainer-customer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .trainer-customers-section {
+    padding: 15px !important;
+  }
+
+  .trainer-customers-section .card-heading {
+    align-items: flex-end !important;
+  }
+
+  .customer-count-box {
+    min-width: 72px;
+    padding: 9px 10px;
+  }
+
+  .customer-count-box strong {
+    font-size: 18px;
+  }
+
+  .trainer-customer-grid {
+    margin-top: 14px;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .trainer-customer-card {
+    padding: 14px;
+  }
+
+  .trainer-customer-head strong {
+    font-size: 17px;
+  }
+
+  .trainer-customer-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .trainer-share-box {
+    grid-column: 1 / -1;
+  }
+
+  .trainer-share-box strong {
+    font-size: 21px !important;
+  }
+
+  .trainer-customer-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* TRAINER SEPARATE ACTIVITY TAB */
+
+.trainer-activity-page {
+  margin-top: 18px;
+}
+
+.trainer-activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.trainer-activity-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #1d1d1d;
+}
+
+.trainer-activity-item:last-child {
+  border-bottom: 0;
+}
+
+.trainer-activity-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.trainer-activity-copy strong {
+  color: #fff;
+  font-size: 12px;
+}
+
+.trainer-activity-copy span {
+  margin-top: 5px;
+  color: #6f6f6f;
+  font-size: 9px;
+}
+
+.trainer-mobile-nav {
+  margin: 18px auto 0;
+  max-width: 1200px;
+  display: flex;
+  gap: 8px;
+}
+
+.trainer-mobile-nav button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid #252525;
+  border-radius: 5px;
+  background: #111;
+  color: #888;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.trainer-mobile-nav button.active {
+  background: #fff;
+  color: #070707;
+  border-color: #fff;
+}
+
+@media (max-width: 760px) {
+  .trainer-mobile-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    margin: 0;
+    height: calc(62px + env(safe-area-inset-bottom));
+    padding:
+      7px 10px
+      calc(7px + env(safe-area-inset-bottom));
+    border-top: 1px solid #222;
+    background: rgba(6,6,6,.97);
+  }
+
+  .trainer-mobile-nav button {
+    flex: 1;
+    min-height: 46px;
+  }
+
+  .trainer-main {
+    padding-bottom: 90px !important;
+  }
+}

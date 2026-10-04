@@ -43,6 +43,7 @@ export default function TrainerDashboard() {
   const [month, setMonth] = useState(defaultMonth)
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
+  const [trainerTab, setTrainerTab] = useState('home')
 
   const loadData = useCallback(async () => {
     const {
@@ -212,6 +213,8 @@ export default function TrainerDashboard() {
 
       <main className="trainer-main">
 
+        {trainerTab === 'home' && (
+          <>
         <div className="trainer-welcome">
 
           <div>
@@ -344,7 +347,7 @@ export default function TrainerDashboard() {
 
         </section>
 
-        <section className="content-card">
+        <section className="content-card trainer-customers-section">
 
           <div className="card-heading">
 
@@ -356,65 +359,110 @@ export default function TrainerDashboard() {
               <h2>
                 Monthly entries
               </h2>
+
+              <p className="section-subtext">
+                Customers assigned to you for the selected month.
+              </p>
+            </div>
+
+            <div className="customer-count-box">
+              <span>Customers</span>
+              <strong>{monthEntries.length}</strong>
             </div>
 
           </div>
 
           {!monthEntries.length ? (
             <div className="empty-state">
-
-              <Users size={34} />
-
-              <strong>
-                No entries
-              </strong>
+              <strong>No customer entries</strong>
 
               <span>
-                No entries for this month.
+                No customers found for this month.
               </span>
-
             </div>
           ) : (
-            <div className="trainer-entry-list">
+            <div className="trainer-customer-grid">
 
               {monthEntries.map((entry) => (
-                <div
-                  className="trainer-entry-card"
+                <article
+                  className="trainer-customer-card"
                   key={entry.id}
                 >
 
-                  <div>
-                    <strong>
-                      {entry.customer_name}
-                    </strong>
+                  <div className="trainer-customer-head">
+
+                    <div>
+                      <span className="trainer-customer-label">
+                        CUSTOMER
+                      </span>
+
+                      <strong>
+                        {entry.customer_name}
+                      </strong>
+                    </div>
+
+                    <span className={`trainer-customer-payment ${entry.payment_status}`}>
+                      {entry.payment_status}
+                    </span>
 
                   </div>
 
-                  <div>
-                    <span>Gym</span>
+                  <div className="trainer-customer-metrics">
 
-                    <strong>
-                      {money(entry.gym_amount)}
-                    </strong>
+                    <div>
+                      <span>Gym</span>
+                      <strong>
+                        {money(entry.gym_amount)}
+                      </strong>
+
+                      {Number(entry.gym_amount || 0) > 0 && (
+                        <small>
+                          {entry.gym_start || '—'} → {entry.gym_end || '—'}
+                        </small>
+                      )}
+                    </div>
+
+                    <div>
+                      <span>PT</span>
+                      <strong>
+                        {money(entry.pt_amount)}
+                      </strong>
+
+                      {Number(entry.pt_amount || 0) > 0 && (
+                        <small>
+                          {entry.pt_start || '—'} → {entry.pt_end || '—'}
+                        </small>
+                      )}
+                    </div>
+
+                    <div className="trainer-share-box">
+                      <span>My Share</span>
+                      <strong>
+                        {money(entry.trainer_share)}
+                      </strong>
+                    </div>
+
                   </div>
 
-                  <div>
-                    <span>PT</span>
+                  <div className="trainer-customer-footer">
 
-                    <strong>
-                      {money(entry.pt_amount)}
-                    </strong>
+                    <div>
+                      <span>Amount received</span>
+                      <strong>
+                        {money(entry.amount_paid)}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Payment mode</span>
+                      <strong>
+                        {entry.payment_mode || '—'}
+                      </strong>
+                    </div>
+
                   </div>
 
-                  <div>
-                    <span>My Share</span>
-
-                    <strong>
-                      {money(entry.trainer_share)}
-                    </strong>
-                  </div>
-
-                </div>
+                </article>
               ))}
 
             </div>
@@ -422,85 +470,103 @@ export default function TrainerDashboard() {
 
         </section>
 
-        <section className="content-card">
+          </>
+        )}
 
-          <div className="card-heading">
+        {trainerTab === 'activity' && (
+          <section className="content-card trainer-activity-page">
 
-            <div>
-              <span className="section-kicker">
-                ACTIVITY
-              </span>
+            <div className="card-heading">
 
-              <h2>
-                My changes
-              </h2>
+              <div>
+                <span className="section-kicker">
+                  ACTIVITY LOG
+                </span>
+
+                <h2>
+                  My activity
+                </h2>
+
+                <p className="section-subtext">
+                  Login, logout and customer changes made by you.
+                </p>
+              </div>
+
             </div>
 
-          </div>
+            {!activities.length ? (
+              <div className="empty-state">
+                <strong>No activity yet</strong>
+              </div>
+            ) : (
+              <div className="trainer-activity-list">
 
-          <div className="activity-list">
+                {activities.map((item) => (
+                  <div
+                    className="trainer-activity-item"
+                    key={item.id}
+                  >
+                    <div className="trainer-activity-copy">
 
-            {activities.map((item) => (
-              <div
-                className="activity-row"
-                key={item.id}
-              >
+                      <strong>
+                        {item.action === 'login' && 'Logged in'}
+                        {item.action === 'logout' && 'Logged out'}
 
-                <div
-                  className={`activity-dot ${item.action}`}
-                />
+                        {item.action === 'insert' &&
+                          item.table_name === 'member_entries' &&
+                          `Added ${item.new_data?.customer_name || 'customer'}`}
 
-                <div className="activity-main">
+                        {item.action === 'update' &&
+                          item.table_name === 'member_entries' &&
+                          `Updated ${
+                            item.new_data?.customer_name ||
+                            item.old_data?.customer_name ||
+                            'customer'
+                          }`}
 
-                  <strong>
-                    {item.action === 'login' && 'Logged in'}
-                    {item.action === 'logout' && 'Logged out'}
+                        {item.action === 'delete' &&
+                          item.table_name === 'member_entries' &&
+                          `Deleted ${item.old_data?.customer_name || 'customer'}`}
 
-                    {item.action === 'insert' &&
-                      item.table_name === 'member_entries' &&
-                      `Added ${item.new_data?.customer_name || 'customer'}`}
+                        {item.action === 'insert' &&
+                          item.table_name === 'trainer_settlements' &&
+                          'Settlement created'}
 
-                    {item.action === 'update' &&
-                      item.table_name === 'member_entries' &&
-                      `Updated ${
-                        item.new_data?.customer_name ||
-                        item.old_data?.customer_name ||
-                        'customer'
-                      }`}
+                        {item.action === 'update' &&
+                          item.table_name === 'trainer_settlements' &&
+                          'Settlement updated'}
+                      </strong>
 
-                    {item.action === 'delete' &&
-                      item.table_name === 'member_entries' &&
-                      `Deleted ${item.old_data?.customer_name || 'customer'}`}
+                      <span>
+                        {item.created_at
+                          ? new Date(item.created_at).toLocaleString('en-IN')
+                          : ''}
+                      </span>
 
-                    {item.action === 'insert' &&
-                      item.table_name === 'trainer_settlements' &&
-                      'Settlement created'}
-
-                    {item.action === 'update' &&
-                      item.table_name === 'trainer_settlements' &&
-                      'Settlement updated'}
-                  </strong>
-
-                  <small>
-                    {item.table_name === 'staff_session'
-                      ? item.new_data?.portal
-                        ? `${item.new_data.portal} portal`
-                        : 'Staff session'
-                      : item.created_at
-                        ? new Date(item.created_at).toLocaleString('en-IN')
-                        : ''}
-                  </small>
-
-                </div>
-
-
+                    </div>
+                  </div>
+                ))}
 
               </div>
-            ))}
+            )}
 
-          </div>
+          </section>
+        )}
+        <div className="trainer-mobile-nav">
+          <button
+            className={trainerTab === 'home' ? 'active' : ''}
+            onClick={() => setTrainerTab('home')}
+          >
+            Home
+          </button>
 
-        </section>
+          <button
+            className={trainerTab === 'activity' ? 'active' : ''}
+            onClick={() => setTrainerTab('activity')}
+          >
+            Activity
+          </button>
+        </div>
 
       </main>
 

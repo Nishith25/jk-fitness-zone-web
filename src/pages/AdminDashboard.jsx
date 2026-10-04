@@ -651,6 +651,13 @@ export default function AdminDashboard() {
 
           </div>
 
+          <button
+            className="mobile-logout-top"
+            onClick={logout}
+          >
+            Logout
+          </button>
+
           <div className="header-actions">
 
             <input

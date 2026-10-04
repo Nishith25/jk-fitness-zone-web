@@ -68,7 +68,9 @@ export default function MobileMemberCards({
               <div>
                 <span>Gym</span>
                 <strong>
-                  {money(entry.gym_amount)}
+                  {entry.gym_fee_paid
+                    ? 'Paid'
+                    : 'Not Paid'}
                 </strong>
 
                 {Number(entry.gym_amount || 0) > 0 && (

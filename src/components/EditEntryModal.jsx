@@ -20,6 +20,15 @@ export default function EditEntryModal({
         trainer_id: entry.trainer_id || '',
         joined_on: entry.joined_on || '',
 
+        gym_fee_paid: Boolean(
+          entry.gym_fee_paid ||
+          Number(entry.gym_amount || 0) > 0
+        ),
+        gym_same_as_pt:
+          Boolean(entry.gym_start) &&
+          Boolean(entry.pt_start) &&
+          entry.gym_start === entry.pt_start &&
+          entry.gym_end === entry.pt_end,
         gym_amount: entry.gym_amount || '',
         gym_start: entry.gym_start || '',
         gym_end: entry.gym_end || '',
@@ -43,10 +52,28 @@ export default function EditEntryModal({
     }
   }, [entry, open])
 
+  useEffect(() => {
+    if (
+      form?.gym_fee_paid &&
+      form?.gym_same_as_pt
+    ) {
+      setForm((prev) => ({
+        ...prev,
+        gym_start: prev.pt_start || '',
+        gym_end: prev.pt_end || '',
+      }))
+    }
+  }, [
+    form?.gym_fee_paid,
+    form?.gym_same_as_pt,
+    form?.pt_start,
+    form?.pt_end,
+  ])
+
   if (!open || !form) return null
 
   const gymEnabled =
-    Number(form.gym_amount || 0) > 0
+    Boolean(form.gym_fee_paid)
 
   const ptEnabled =
     Number(form.pt_amount || 0) > 0
@@ -87,7 +114,7 @@ export default function EditEntryModal({
       }
 
       if (
-        gymAmount > 0 &&
+        form.gym_fee_paid &&
         (!form.gym_start ||
           !form.gym_end)
       ) {
@@ -120,8 +147,11 @@ export default function EditEntryModal({
           joined_on:
             form.joined_on,
 
+          gym_fee_paid:
+            Boolean(form.gym_fee_paid),
+
           gym_amount:
-            gymAmount,
+            0,
 
           gym_start:
             gymAmount > 0
@@ -279,29 +309,58 @@ export default function EditEntryModal({
 
             <h3>Gym membership</h3>
 
-            <div className="form-grid">
+            <label className="gym-fee-check">
+              <input
+                type="checkbox"
+                checked={Boolean(form.gym_fee_paid)}
+                onChange={(e) =>
+                  update(
+                    'gym_fee_paid',
+                    e.target.checked
+                  )
+                }
+              />
 
-              <label>
-                Gym amount
+              <div>
+                <strong>Gym fee paid</strong>
+                <span>
+                  Controls the PT commission percentage.
+                </span>
+              </div>
+            </label>
+
+            {form.gym_fee_paid && (
+              <label className="same-date-check">
                 <input
-                  type="number"
-                  min="0"
-                  value={form.gym_amount}
+                  type="checkbox"
+                  checked={Boolean(form.gym_same_as_pt)}
                   onChange={(e) =>
                     update(
-                      'gym_amount',
-                      e.target.value
+                      'gym_same_as_pt',
+                      e.target.checked
                     )
                   }
                 />
+
+                <div>
+                  <strong>Same dates as PT</strong>
+                  <span>
+                    Keep Gym validity equal to PT validity.
+                  </span>
+                </div>
               </label>
+            )}
+
+            <div className="form-grid">
+
+              
 
               <label>
                 Start date
                 <input
                   type="date"
                   value={form.gym_start}
-                  disabled={!gymEnabled}
+                  disabled={!gymEnabled || form.gym_same_as_pt}
                   onChange={(e) =>
                     update(
                       'gym_start',
@@ -316,7 +375,7 @@ export default function EditEntryModal({
                 <input
                   type="date"
                   value={form.gym_end}
-                  disabled={!gymEnabled}
+                  disabled={!gymEnabled || form.gym_same_as_pt}
                   onChange={(e) =>
                     update(
                       'gym_end',

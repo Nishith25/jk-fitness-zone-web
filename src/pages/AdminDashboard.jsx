@@ -1559,7 +1559,22 @@ function ActivityList({
                   {item.action === 'logout' && ' logged out'}
 
                   {item.action === 'insert' && item.table_name === 'member_entries' && ' added '}
-                  {item.action === 'update' && item.table_name === 'member_entries' && ' updated '}
+                  {item.action === 'update' &&
+                    item.table_name === 'member_entries' &&
+                    item.old_data?.is_cancelled === false &&
+                    item.new_data?.is_cancelled === true &&
+                    ' cancelled '}
+
+                  {item.action === 'update' &&
+                    item.table_name === 'member_entries' &&
+                    item.old_data?.is_cancelled === true &&
+                    item.new_data?.is_cancelled === false &&
+                    ' restored '}
+
+                  {item.action === 'update' &&
+                    item.table_name === 'member_entries' &&
+                    item.old_data?.is_cancelled === item.new_data?.is_cancelled &&
+                    ' updated '}
                   {item.action === 'delete' && item.table_name === 'member_entries' && ' deleted '}
 
                   {item.action === 'insert' && item.table_name === 'trainer_settlements' && ' created a trainer settlement'}

@@ -71,7 +71,17 @@ export default function RenewEntryModal({
       nextDay(entry.pt_end)
 
     setForm({
-      renew_gym: hasGym,
+      renew_gym:
+        Boolean(
+          entry.gym_fee_paid ||
+          hasGym
+        ),
+
+      gym_same_as_pt:
+        Boolean(entry.gym_start) &&
+        Boolean(entry.pt_start) &&
+        entry.gym_start === entry.pt_start &&
+        entry.gym_end === entry.pt_end,
       renew_pt: hasPT,
 
       gym_amount:
@@ -108,6 +118,24 @@ export default function RenewEntryModal({
       notes: '',
     })
   }, [open, entry])
+
+  useEffect(() => {
+    if (
+      form?.renew_gym &&
+      form?.gym_same_as_pt
+    ) {
+      setForm((prev) => ({
+        ...prev,
+        gym_start: prev.pt_start || '',
+        gym_end: prev.pt_end || '',
+      }))
+    }
+  }, [
+    form?.renew_gym,
+    form?.gym_same_as_pt,
+    form?.pt_start,
+    form?.pt_end,
+  ])
 
   if (
     !open ||
@@ -199,8 +227,11 @@ export default function RenewEntryModal({
               .toISOString()
               .split('T')[0],
 
+          gym_fee_paid:
+            Boolean(form.renew_gym),
+
           gym_amount:
-            gym,
+            0,
 
           gym_start:
             form.renew_gym
@@ -368,29 +399,35 @@ export default function RenewEntryModal({
                 Gym membership
               </h3>
 
+              <label className="same-date-check">
+                <input
+                  type="checkbox"
+                  checked={Boolean(form.gym_same_as_pt)}
+                  onChange={(e) =>
+                    update(
+                      'gym_same_as_pt',
+                      e.target.checked
+                    )
+                  }
+                />
+
+                <div>
+                  <strong>Same dates as PT</strong>
+                  <span>
+                    Use the PT renewal dates for Gym.
+                  </span>
+                </div>
+              </label>
+
               <div className="form-grid">
 
-                <label>
-                  Gym amount
-                  <input
-                    type="number"
-                    min="0"
-                    value={
-                      form.gym_amount
-                    }
-                    onChange={(e) =>
-                      update(
-                        'gym_amount',
-                        e.target.value
-                      )
-                    }
-                  />
-                </label>
+                
 
                 <label>
                   Start date
                   <input
                     type="date"
+                    disabled={form.gym_same_as_pt}
                     value={
                       form.gym_start
                     }
@@ -417,6 +454,7 @@ export default function RenewEntryModal({
                   Expiry date
                   <input
                     type="date"
+                    disabled={form.gym_same_as_pt}
                     value={
                       form.gym_end
                     }

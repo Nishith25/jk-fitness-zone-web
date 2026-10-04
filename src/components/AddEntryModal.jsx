@@ -7,7 +7,9 @@ const emptyForm = {
   trainer_id: '',
   joined_on: new Date().toISOString().split('T')[0],
 
-  gym_amount: '',
+  gym_fee_paid: false,
+      gym_same_as_pt: false,
+      gym_amount: '',
   gym_start: '',
   gym_end: '',
 
@@ -61,7 +63,7 @@ export default function AddEntryModal({
   const gymAmount = Number(form.gym_amount || 0)
   const ptAmount = Number(form.pt_amount || 0)
 
-  const gymEnabled = gymAmount > 0
+  const gymEnabled = Boolean(form.gym_fee_paid)
   const ptEnabled = ptAmount > 0
 
   const preview = useMemo(() => {
@@ -223,6 +225,24 @@ export default function AddEntryModal({
     }
   }
 
+  useEffect(() => {
+    if (
+      form.gym_fee_paid &&
+      form.gym_same_as_pt
+    ) {
+      setForm((prev) => ({
+        ...prev,
+        gym_start: prev.pt_start || '',
+        gym_end: prev.pt_end || '',
+      }))
+    }
+  }, [
+    form.gym_fee_paid,
+    form.gym_same_as_pt,
+    form.pt_start,
+    form.pt_end,
+  ])
+
   if (!open) return null
 
   return (
@@ -321,33 +341,39 @@ export default function AddEntryModal({
             <div className="form-section-heading">
               <h3>Gym membership</h3>
 
+              <label className="gym-fee-check">
+                <input
+                  type="checkbox"
+                  checked={Boolean(form.gym_fee_paid)}
+                  onChange={(e) =>
+                    update(
+                      'gym_fee_paid',
+                      e.target.checked
+                    )
+                  }
+                />
+
+                <div>
+                  <strong>Gym fee paid</strong>
+                  <span>
+                    Tick if the customer has paid the gym fee.
+                  </span>
+                </div>
+              </label>
+
 
             </div>
 
             <div className="form-grid">
 
-              <label>
-                Gym amount
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="₹0"
-                  value={form.gym_amount}
-                  onChange={(e) =>
-                    update(
-                      'gym_amount',
-                      e.target.value
-                    )
-                  }
-                />
-              </label>
+              
 
               <label>
                 Start date
                 <input
                   type="date"
                   value={form.gym_start}
-                  disabled={!gymEnabled}
+                  disabled={!gymEnabled || form.gym_same_as_pt}
                   onChange={(e) =>
                     update(
                       'gym_start',
@@ -362,7 +388,7 @@ export default function AddEntryModal({
                 <input
                   type="date"
                   value={form.gym_end}
-                  disabled={!gymEnabled}
+                  disabled={!gymEnabled || form.gym_same_as_pt}
                   onChange={(e) =>
                     update(
                       'gym_end',

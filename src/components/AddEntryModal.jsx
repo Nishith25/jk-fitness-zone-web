@@ -342,42 +342,73 @@ export default function AddEntryModal({
 
           <div className="form-section">
 
-            <div className="form-section-heading">
-              <h3>Gym membership</h3>
+            <h3>Gym membership</h3>
 
-              <label className="gym-fee-check">
+            <div className="gym-options-row">
+
+              <label className="mini-check">
                 <input
                   type="checkbox"
                   checked={Boolean(form.gym_fee_paid)}
                   onChange={(e) =>
-                    update(
-                      'gym_fee_paid',
-                      e.target.checked
-                    )
+                    setForm((prev) => ({
+                      ...prev,
+                      gym_fee_paid: e.target.checked,
+                      gym_same_as_pt: e.target.checked
+                        ? prev.gym_same_as_pt
+                        : false,
+                      gym_start: e.target.checked
+                        ? prev.gym_start
+                        : '',
+                      gym_end: e.target.checked
+                        ? prev.gym_end
+                        : '',
+                    }))
                   }
                 />
-
-                <div>
-                  <strong>Gym fee paid</strong>
-                  <span>
-                    Tick if the customer has paid the gym fee.
-                  </span>
-                </div>
+                <span>Gym fee paid</span>
               </label>
 
+              <label
+                className={
+                  form.gym_fee_paid
+                    ? 'mini-check'
+                    : 'mini-check disabled'
+                }
+              >
+                <input
+                  type="checkbox"
+                  disabled={!form.gym_fee_paid}
+                  checked={Boolean(form.gym_same_as_pt)}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      gym_same_as_pt: e.target.checked,
+                      gym_start: e.target.checked
+                        ? prev.pt_start || ''
+                        : prev.gym_start,
+                      gym_end: e.target.checked
+                        ? prev.pt_end || ''
+                        : prev.gym_end,
+                    }))
+                  }
+                />
+                <span>Same dates as PT</span>
+              </label>
 
             </div>
 
-            <div className="form-grid">
-
-              
+            <div className="membership-fields">
 
               <label>
                 Start date
                 <input
                   type="date"
                   value={form.gym_start}
-                  disabled={!gymEnabled || form.gym_same_as_pt}
+                  disabled={
+                    !form.gym_fee_paid ||
+                    form.gym_same_as_pt
+                  }
                   onChange={(e) =>
                     setForm((prev) => ({
                       ...prev,
@@ -395,7 +426,10 @@ export default function AddEntryModal({
                 Duration
                 <select
                   value={form.gym_duration}
-                  disabled={!gymEnabled || form.gym_same_as_pt}
+                  disabled={
+                    !form.gym_fee_paid ||
+                    form.gym_same_as_pt
+                  }
                   onChange={(e) =>
                     setForm((prev) => ({
                       ...prev,
@@ -409,8 +443,8 @@ export default function AddEntryModal({
                 >
                   {MEMBERSHIP_DURATIONS.map((item) => (
                     <option
-                      value={item.value}
                       key={item.value}
+                      value={item.value}
                     >
                       {item.label}
                     </option>
@@ -428,6 +462,7 @@ export default function AddEntryModal({
               </label>
 
             </div>
+
           </div>
 
           <div className="form-section">

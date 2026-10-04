@@ -5351,3 +5351,115 @@ textarea:focus {
     min-height: 14px !important;
   }
 }
+
+/* FINAL MEMBERSHIP FORM LAYOUT */
+
+.gym-options-row {
+  margin: 10px 0 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mini-check {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #293238;
+  border-radius: 5px;
+  background: #0e1316;
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 7px !important;
+  cursor: pointer;
+}
+
+.mini-check input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px !important;
+  height: 14px !important;
+  min-height: 14px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid #667078 !important;
+  border-radius: 3px !important;
+  background: #080b0d !important;
+  position: relative;
+}
+
+.mini-check input:checked {
+  background: var(--jk-blue, #168bc4) !important;
+  border-color: var(--jk-blue, #168bc4) !important;
+}
+
+.mini-check input:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 3px;
+  height: 7px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.mini-check span {
+  color: #e8ecee;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.mini-check.disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
+.membership-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* PT now has 4 fields */
+.form-section:has(h3:first-child:nth-last-child(n)) .form-grid {
+  align-items: end;
+}
+
+/* specifically allow four equal columns where needed */
+.entry-form .form-section .form-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Customer/payment sections remain sensible */
+.entry-form .form-section:first-of-type .form-grid {
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+
+@media (max-width: 760px) {
+
+  .gym-options-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  .mini-check {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0 9px;
+  }
+
+  .mini-check span {
+    font-size: 9px;
+  }
+
+  .membership-fields,
+  .entry-form .form-section .form-grid,
+  .entry-form .form-section:first-of-type .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}

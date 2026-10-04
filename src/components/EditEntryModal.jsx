@@ -83,6 +83,58 @@ export default function EditEntryModal({
     form?.pt_end,
   ])
 
+  useEffect(() => {
+    if (
+      form &&
+      Number(form.pt_amount || 0) > 0 &&
+      form.pt_start &&
+      form.pt_duration
+    ) {
+      const calculated = calculateExpiryDate(
+        form.pt_start,
+        form.pt_duration
+      )
+
+      if (calculated && calculated !== form.pt_end) {
+        setForm((prev) => ({
+          ...prev,
+          pt_end: calculated,
+        }))
+      }
+    }
+  }, [
+    form?.pt_amount,
+    form?.pt_start,
+    form?.pt_duration,
+  ])
+
+  useEffect(() => {
+    if (
+      form &&
+      form.gym_fee_paid &&
+      !form.gym_same_as_pt &&
+      form.gym_start &&
+      form.gym_duration
+    ) {
+      const calculated = calculateExpiryDate(
+        form.gym_start,
+        form.gym_duration
+      )
+
+      if (calculated && calculated !== form.gym_end) {
+        setForm((prev) => ({
+          ...prev,
+          gym_end: calculated,
+        }))
+      }
+    }
+  }, [
+    form?.gym_fee_paid,
+    form?.gym_same_as_pt,
+    form?.gym_start,
+    form?.gym_duration,
+  ])
+
   if (!open || !form) return null
 
   const gymEnabled =

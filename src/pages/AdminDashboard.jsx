@@ -45,6 +45,7 @@ import AppLogo from '../components/AppLogo'
 import RenewEntryModal from '../components/RenewEntryModal'
 import ExpirySummary from '../components/ExpirySummary'
 import { getEntryExpiryStatus } from '../utils/membershipStatus'
+import MasterDataManager from '../components/MasterDataManager'
 
 function money(value) {
   return `₹${Number(
@@ -657,6 +658,9 @@ export default function AdminDashboard() {
 
                 {tab === 'activity' &&
                   'Activity Log'}
+
+                {tab === 'masters' &&
+                  'Masters'}
               </h1>
             </div>
 
@@ -727,6 +731,15 @@ export default function AdminDashboard() {
             </div>
 
             <button
+              className="secondary-button"
+              onClick={() =>
+                setTab('masters')
+              }
+            >
+              Masters
+            </button>
+
+            <button
               className="primary-button"
               onClick={() =>
                 setModalOpen(true)
@@ -774,6 +787,13 @@ export default function AdminDashboard() {
             onClick={() => setTab('activity')}
           >
             Activity
+          </button>
+
+          <button
+            className={tab === 'masters' ? 'mobile-tab-chip active' : 'mobile-tab-chip'}
+            onClick={() => setTab('masters')}
+          >
+            Masters
           </button>
         </div>
 

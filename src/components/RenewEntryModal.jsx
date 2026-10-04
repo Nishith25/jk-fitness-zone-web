@@ -166,6 +166,58 @@ export default function RenewEntryModal({
     form?.pt_end,
   ])
 
+  useEffect(() => {
+    if (
+      form &&
+      form.renew_pt &&
+      form.pt_start &&
+      form.pt_duration
+    ) {
+      const calculated = calculateExpiryDate(
+        form.pt_start,
+        form.pt_duration
+      )
+
+      if (calculated && calculated !== form.pt_end) {
+        setForm((prev) => ({
+          ...prev,
+          pt_end: calculated,
+        }))
+      }
+    }
+  }, [
+    form?.renew_pt,
+    form?.pt_start,
+    form?.pt_duration,
+  ])
+
+  useEffect(() => {
+    if (
+      form &&
+      form.renew_gym &&
+      !form.gym_same_as_pt &&
+      form.gym_start &&
+      form.gym_duration
+    ) {
+      const calculated = calculateExpiryDate(
+        form.gym_start,
+        form.gym_duration
+      )
+
+      if (calculated && calculated !== form.gym_end) {
+        setForm((prev) => ({
+          ...prev,
+          gym_end: calculated,
+        }))
+      }
+    }
+  }, [
+    form?.renew_gym,
+    form?.gym_same_as_pt,
+    form?.gym_start,
+    form?.gym_duration,
+  ])
+
   if (
     !open ||
     !entry ||

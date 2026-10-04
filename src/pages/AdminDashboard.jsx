@@ -38,6 +38,11 @@ import TrainerSettlements from '../components/TrainerSettlements'
 import { exportAdminReport } from '../utils/exportAdminReport'
 import { exportAdminExcel, exportAdminCSV } from '../utils/exportData'
 import DashboardCharts from '../components/DashboardCharts'
+
+import {
+  getMonthlyAllocations,
+  getMonthlyTotals,
+} from '../utils/monthlyAllocation'
 import MobileExports from '../components/MobileExports'
 import MobileMemberCards from '../components/MobileMemberCards'
 import MobileBottomNav from '../components/MobileBottomNav'
@@ -307,6 +312,26 @@ export default function AdminDashboard() {
         (entry) => !entry.is_cancelled
       )
     }, [monthEntries])
+
+  const monthlyAllocations =
+    useMemo(
+      () =>
+        getMonthlyAllocations(
+          entries,
+          month
+        ),
+      [entries, month]
+    )
+
+  const monthlyFinancials =
+    useMemo(
+      () =>
+        getMonthlyTotals(
+          entries,
+          month
+        ),
+      [entries, month]
+    )
 
   const stats = useMemo(() => {
     const totalCollected =
@@ -899,27 +924,23 @@ export default function AdminDashboard() {
             <section className="revenue-strip">
 
               <div>
-                <span>Gym Value</span>
+                <span>PT Business</span>
                 <strong>
-                  {money(
-                    stats.gymRevenue
-                  )}
+                  {money(stats.ptRevenue)}
                 </strong>
               </div>
 
               <div>
-                <span>PT Value</span>
+                <span>JK Fitness Share</span>
                 <strong>
-                  {money(
-                    stats.ptRevenue
-                  )}
+                  {money(stats.adminShare)}
                 </strong>
               </div>
 
               <div>
-                <span>Pending</span>
+                <span>Trainer Share</span>
                 <strong>
-                  {money(stats.pending)}
+                  {money(stats.trainerShare)}
                 </strong>
               </div>
 
@@ -1086,11 +1107,10 @@ export default function AdminDashboard() {
                   (trainer) => {
 
                     const trainerEntries =
-                      entries.filter(
+                      monthlyAllocations.filter(
                         (entry) =>
                           entry.trainer_id ===
-                            trainer.id &&
-                          !entry.is_cancelled
+                            trainer.id
                       )
 
                     const revenueShare =
@@ -1098,7 +1118,7 @@ export default function AdminDashboard() {
                         (sum, entry) =>
                           sum +
                           Number(
-                            entry.trainer_share ||
+                            entry.monthly_trainer_share ||
                               0
                           ),
                         0

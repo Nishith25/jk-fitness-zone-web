@@ -23,6 +23,10 @@ import StatCard from '../components/StatCard'
 import AddEntryModal from '../components/AddEntryModal'
 import AppLogo from '../components/AppLogo'
 
+import {
+  getMonthlyAllocations,
+} from '../utils/monthlyAllocation'
+
 function money(value) {
   return `₹${Number(value || 0).toLocaleString('en-IN')}`
 }
@@ -149,10 +153,9 @@ export default function TrainerDashboard() {
   }, [loadData])
 
   const monthEntries = useMemo(() => {
-    return entries.filter(
-      (entry) =>
-        !entry.is_cancelled &&
-        entry.joined_on?.slice(0, 7) === month
+    return getMonthlyAllocations(
+      entries,
+      month
     )
   }, [entries, month])
 
@@ -200,14 +203,17 @@ export default function TrainerDashboard() {
 
   const stats = useMemo(() => {
     return {
-      customers: monthEntries.length,
+      customers:
+        monthEntries.length,
 
       total:
         monthEntries.reduce(
           (sum, entry) =>
             sum +
-            Number(entry.gym_amount || 0) +
-            Number(entry.pt_amount || 0),
+            Number(
+              entry.monthly_pt_amount ||
+              0
+            ),
           0
         ),
 
@@ -215,7 +221,10 @@ export default function TrainerDashboard() {
         monthEntries.reduce(
           (sum, entry) =>
             sum +
-            Number(entry.trainer_share || 0),
+            Number(
+              entry.monthly_trainer_share ||
+              0
+            ),
           0
         ),
     }
@@ -585,8 +594,14 @@ export default function TrainerDashboard() {
                     <div>
                       <span>PT</span>
                       <strong>
-                        {money(entry.pt_amount)}
+                        {money(entry.monthly_pt_amount)}
                       </strong>
+
+                      <small>
+                        Monthly · Package {money(entry.pt_amount)}
+                        {' / '}
+                        {entry.duration_months}M
+                      </small>
 
                       {Number(entry.pt_amount || 0) > 0 && (
                         <small>
@@ -598,7 +613,7 @@ export default function TrainerDashboard() {
                     <div className="trainer-share-box">
                       <span>My Share</span>
                       <strong>
-                        {money(entry.trainer_share)}
+                        {money(entry.monthly_trainer_share)}
                       </strong>
                     </div>
 

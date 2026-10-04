@@ -152,6 +152,9 @@ export default function AdminDashboard() {
   const [modalOpen, setModalOpen] =
     useState(false)
 
+  const [saveMessage, setSaveMessage] =
+    useState('')
+
   const [trainerModalOpen, setTrainerModalOpen] =
     useState(false)
 
@@ -753,6 +756,12 @@ export default function AdminDashboard() {
 
         </header>
 
+        {saveMessage && (
+          <div className="save-success-message">
+            {saveMessage}
+          </div>
+        )}
+
         <div className="mobile-tab-strip">
           <button
             className={tab === 'dashboard' ? 'mobile-tab-chip active' : 'mobile-tab-chip'}
@@ -1200,7 +1209,38 @@ export default function AdminDashboard() {
         onClose={() =>
           setModalOpen(false)
         }
-        onSaved={loadData}
+        onSaved={(saved) => {
+          const savedMonth =
+            saved?.joined_on?.slice(0, 7)
+
+          if (savedMonth) {
+            const [year, monthNumber] =
+              savedMonth.split('-')
+
+            const monthName =
+              new Date(
+                Number(year),
+                Number(monthNumber) - 1,
+                1
+              ).toLocaleString('en-IN', {
+                month: 'long',
+                year: 'numeric',
+              })
+
+            setSaveMessage(
+              `Entry saved under ${monthName}`
+            )
+
+            setMonth(savedMonth)
+            setTab('members')
+
+            setTimeout(() => {
+              setSaveMessage('')
+            }, 3500)
+          }
+
+          loadData()
+        }}
         currentUserId={
           profile?.id
         }

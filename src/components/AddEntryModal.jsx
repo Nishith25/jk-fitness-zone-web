@@ -379,6 +379,17 @@ export default function AddEntryModal({
           .insert(payload)
 
       if (insertError) {
+        if (
+          insertError.code === '23505' ||
+          insertError.message
+            ?.toLowerCase()
+            .includes('duplicate')
+        ) {
+          throw new Error(
+            'Duplicate entry found. This customer already has the same joining date and PT amount.'
+          )
+        }
+
         throw insertError
       }
 
@@ -391,7 +402,12 @@ export default function AddEntryModal({
             : '',
       })
 
-      onSaved?.()
+      onSaved?.({
+        customer_name: customerName,
+        joined_on: form.joined_on,
+        pt_amount: selectedPtAmount,
+      })
+
       onClose()
     } catch (err) {
       setError(

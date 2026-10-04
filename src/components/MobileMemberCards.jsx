@@ -4,8 +4,8 @@ function money(value) {
   return `₹${Number(value || 0).toLocaleString('en-IN')}`
 }
 
-function date(value) {
-  if (!value) return '—'
+function shortDate(value) {
+  if (!value) return ''
 
   return new Date(
     `${value}T00:00:00`
@@ -24,15 +24,14 @@ export default function MobileMemberCards({
 }) {
   if (!entries?.length) {
     return (
-      <div className="mobile-empty-box">
-        <strong>No entries</strong>
-        <span>No customers found for this month.</span>
+      <div className="simple-empty">
+        No customer entries
       </div>
     )
   }
 
   return (
-    <div className="mobile-member-list">
+    <div className="simple-customer-list">
 
       {entries.map((entry) => {
         const { gym, pt } =
@@ -40,32 +39,31 @@ export default function MobileMemberCards({
 
         return (
           <article
-            className={
-              entry.is_cancelled
-                ? 'mobile-member-card cancelled'
-                : 'mobile-member-card'
-            }
+            className="simple-customer-row"
             key={entry.id}
           >
 
-            <div className="mobile-member-head">
+            <div className="simple-customer-top">
 
-              <div>
+              <div className="simple-customer-name">
                 <strong>
                   {entry.customer_name}
                 </strong>
 
+                <span>
+                  {entry.staff_profiles?.full_name || 'No trainer'}
+                </span>
               </div>
 
               <span
-                className={`mobile-payment-status ${entry.payment_status}`}
+                className={`simple-status ${entry.payment_status}`}
               >
                 {entry.payment_status}
               </span>
 
             </div>
 
-            <div className="mobile-member-grid">
+            <div className="simple-customer-values">
 
               <div>
                 <span>Gym</span>
@@ -75,14 +73,14 @@ export default function MobileMemberCards({
 
                 {Number(entry.gym_amount || 0) > 0 && (
                   <small>
-                    {date(entry.gym_start)}
+                    {shortDate(entry.gym_start)}
                     {' – '}
-                    {date(entry.gym_end)}
+                    {shortDate(entry.gym_end)}
                   </small>
                 )}
 
                 {gym && (
-                  <small className={`mobile-membership-state ${gym.type}`}>
+                  <small>
                     {gym.label}
                   </small>
                 )}
@@ -96,89 +94,66 @@ export default function MobileMemberCards({
 
                 {Number(entry.pt_amount || 0) > 0 && (
                   <small>
-                    {date(entry.pt_start)}
+                    {shortDate(entry.pt_start)}
                     {' – '}
-                    {date(entry.pt_end)}
+                    {shortDate(entry.pt_end)}
                   </small>
                 )}
 
                 {pt && (
-                  <small className={`mobile-membership-state ${pt.type}`}>
+                  <small>
                     {pt.label}
                   </small>
                 )}
               </div>
 
               <div>
-                <span>JK Share</span>
+                <span>Paid</span>
                 <strong>
-                  {money(entry.admin_share)}
+                  {money(entry.amount_paid)}
                 </strong>
               </div>
 
               <div>
-                <span>Trainer Share</span>
+                <span>Trainer</span>
                 <strong>
                   {money(entry.trainer_share)}
                 </strong>
-
-                <small>
-                  {entry.staff_profiles?.full_name || 'No trainer'}
-                </small>
               </div>
 
             </div>
 
-            <div className="mobile-member-paid">
-              <span>Amount received</span>
+            <div className="simple-customer-actions">
 
-              <strong>
-                {money(entry.amount_paid)}
-              </strong>
+              {!entry.is_cancelled ? (
+                <>
+                  <button
+                    onClick={() => onRenew?.(entry)}
+                  >
+                    Renew
+                  </button>
+
+                  <button
+                    onClick={() => onEdit?.(entry)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() => onCancel?.(entry)}
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => onRestore?.(entry)}
+                >
+                  Restore
+                </button>
+              )}
+
             </div>
-
-            {!entry.is_cancelled ? (
-              <div className="mobile-member-actions">
-
-                <button
-                  onClick={() =>
-                    onRenew?.(entry)
-                  }
-                >
-                  Renew
-                </button>
-
-                <button
-                  onClick={() =>
-                    onEdit?.(entry)
-                  }
-                >
-                  Edit
-                </button>
-
-                <button
-                  className="danger"
-                  onClick={() =>
-                    onCancel?.(entry)
-                  }
-                >
-                  Cancel
-                </button>
-
-              </div>
-            ) : (
-              <div className="mobile-member-actions">
-
-                <button
-                  onClick={() =>
-                    onRestore?.(entry)
-                  }
-                >
-                  Restore Entry
-                </button>
-
-              </div>
-            )}
 
           </article>
         )

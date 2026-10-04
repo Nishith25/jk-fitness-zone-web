@@ -4735,3 +4735,413 @@ body {
     font-size: 20px !important;
   }
 }
+
+/* =========================================================
+   JK FITNESS ZONE BRAND THEME
+========================================================= */
+
+:root {
+  --jk-bg: #07090b;
+  --jk-panel: #0c0f12;
+  --jk-panel-2: #111519;
+  --jk-line: #22282d;
+
+  --jk-blue: #168bc4;
+  --jk-blue-soft: #1279a9;
+
+  --jk-green: #7acb00;
+  --jk-green-soft: #65aa00;
+
+  --jk-white: #f4f6f7;
+  --jk-muted: #7f898f;
+}
+
+body,
+html,
+#root {
+  background: var(--jk-bg) !important;
+  color: var(--jk-white) !important;
+}
+
+.jk-brand-logo,
+.app-logo-image {
+  filter: none !important;
+  background: #ffffff !important;
+}
+
+.jk-brand-copy strong,
+.app-logo-text strong {
+  color: #ffffff !important;
+}
+
+.jk-brand-copy span,
+.app-logo-text span {
+  color: #8d969c !important;
+}
+
+/* MAIN PANELS */
+
+.content-card,
+.stat-card,
+.expiry-card,
+.chart-card,
+.admin-trainer-card,
+.trainer-payment-card,
+.trainer-customer-card,
+.settlement-row,
+.salary-settlement-row {
+  background: var(--jk-panel) !important;
+  border-color: var(--jk-line) !important;
+}
+
+/* PRIMARY ACTION */
+
+.primary-button,
+.mono-login-submit,
+.sign-in-button {
+  background: var(--jk-blue) !important;
+  border-color: var(--jk-blue) !important;
+  color: #ffffff !important;
+}
+
+.primary-button:hover,
+.mono-login-submit:hover {
+  background: var(--jk-blue-soft) !important;
+}
+
+/* ACTIVE NAV */
+
+.side-nav-item.active,
+.mobile-bottom-item.active,
+.trainer-mobile-nav button.active,
+.mobile-tab-chip.active {
+  background: rgba(22,139,196,.12) !important;
+  border-color: rgba(22,139,196,.45) !important;
+  color: #ffffff !important;
+}
+
+/* PAID / POSITIVE */
+
+.trainer-paid-status,
+.settlement-status.paid,
+.trainer-customer-payment.paid,
+.mobile-payment-status.paid {
+  color: var(--jk-green) !important;
+  border-color: rgba(122,203,0,.35) !important;
+  background: rgba(122,203,0,.06) !important;
+}
+
+/* PENDING = NEUTRAL */
+
+.trainer-pending-status,
+.settlement-status.pending,
+.trainer-customer-payment.pending,
+.mobile-payment-status.pending {
+  color: #c5c9cc !important;
+  border-color: #30363b !important;
+  background: #111519 !important;
+}
+
+.section-kicker {
+  color: var(--jk-blue) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(22,139,196,.65) !important;
+  box-shadow: 0 0 0 2px rgba(22,139,196,.09) !important;
+}
+
+/* =========================================================
+   SIMPLE CUSTOMER ROWS
+========================================================= */
+
+.simple-customer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.simple-customer-row {
+  padding: 12px;
+  border: 1px solid var(--jk-line);
+  border-radius: 6px;
+  background: var(--jk-panel);
+}
+
+.simple-customer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.simple-customer-name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.simple-customer-name strong {
+  color: #fff;
+  font-size: 14px;
+}
+
+.simple-customer-name span {
+  color: var(--jk-muted);
+  font-size: 9px;
+}
+
+.simple-status {
+  flex: 0 0 auto;
+  padding: 4px 6px;
+  border: 1px solid #30363a;
+  border-radius: 4px;
+  color: #bbb;
+  background: #101316;
+  font-size: 7px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.simple-status.paid {
+  color: var(--jk-green);
+  border-color: rgba(122,203,0,.3);
+}
+
+.simple-customer-values {
+  margin-top: 10px;
+  padding: 9px 0;
+  border-top: 1px solid #1b2024;
+  border-bottom: 1px solid #1b2024;
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0,1fr));
+}
+
+.simple-customer-values > div {
+  min-width: 0;
+  padding: 0 8px;
+  border-right: 1px solid #1c2226;
+  display: flex;
+  flex-direction: column;
+}
+
+.simple-customer-values > div:first-child {
+  padding-left: 0;
+}
+
+.simple-customer-values > div:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.simple-customer-values span {
+  color: #6f787e;
+  font-size: 7px;
+  text-transform: uppercase;
+}
+
+.simple-customer-values strong {
+  margin-top: 4px;
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.simple-customer-values small {
+  margin-top: 2px;
+  color: #6e777c;
+  font-size: 7px;
+  line-height: 1.25;
+}
+
+.simple-customer-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.simple-customer-actions button {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid #293037;
+  border-radius: 4px;
+  background: #111519;
+  color: #cdd1d4;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.simple-empty {
+  padding: 30px 15px;
+  text-align: center;
+  color: #7b848a;
+  font-size: 11px;
+}
+
+@media (max-width: 760px) {
+
+  /* CUSTOMER SECTION */
+
+  .trainer-customers-section {
+    padding: 13px !important;
+  }
+
+  .customer-count-box {
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 !important;
+    min-width: auto !important;
+  }
+
+  .customer-count-box span {
+    display: none !important;
+  }
+
+  .customer-count-box strong {
+    font-size: 20px !important;
+    color: var(--jk-blue) !important;
+  }
+
+  .trainer-customer-card {
+    padding: 12px !important;
+    background: var(--jk-panel) !important;
+  }
+
+  .trainer-customer-head {
+    padding-bottom: 9px !important;
+  }
+
+  .trainer-customer-head strong {
+    font-size: 15px !important;
+  }
+
+  /* FOUR VALUES IN ONE CLEAN LINE */
+
+  .trainer-customer-metrics {
+    margin: 0 !important;
+    padding: 9px 0 !important;
+    border-top: 1px solid #1c2226 !important;
+    border-bottom: 1px solid #1c2226 !important;
+    display: grid !important;
+    grid-template-columns:
+      repeat(3, minmax(0,1fr)) !important;
+  }
+
+  .trainer-customer-metrics > div {
+    min-height: 57px !important;
+    padding: 0 7px !important;
+    border: 0 !important;
+    border-right: 1px solid #1c2226 !important;
+    background: transparent !important;
+  }
+
+  .trainer-customer-metrics > div:first-child {
+    padding-left: 0 !important;
+  }
+
+  .trainer-customer-metrics > div:last-child {
+    border-right: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .trainer-customer-metrics span {
+    font-size: 7px !important;
+  }
+
+  .trainer-customer-metrics strong,
+  .trainer-share-box strong {
+    margin-top: 4px !important;
+    font-size: 14px !important;
+  }
+
+  .trainer-customer-metrics small {
+    font-size: 7px !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+  }
+
+  .trainer-customer-footer {
+    min-height: 38px;
+    margin: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .trainer-customer-footer > div {
+    min-height: 38px !important;
+    padding: 7px 0 !important;
+    border: 0 !important;
+  }
+
+  .trainer-customer-footer span {
+    font-size: 7px !important;
+  }
+
+  .trainer-customer-footer strong {
+    font-size: 10px !important;
+  }
+
+  /* TIGHTER DASHBOARD */
+
+  .trainer-stats {
+    grid-template-columns:
+      repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .trainer-stats .stat-card {
+    min-height: 82px !important;
+  }
+
+  .trainer-payment-card {
+    min-height: auto !important;
+  }
+}
+
+@media (max-width: 760px) {
+
+  .main-content,
+  .trainer-main {
+    padding-left: 11px !important;
+    padding-right: 11px !important;
+  }
+
+  .content-card {
+    padding: 12px !important;
+  }
+
+  .dashboard-header {
+    margin-bottom: 10px !important;
+  }
+
+  .stats-grid,
+  .expiry-grid {
+    gap: 7px !important;
+  }
+
+  .stat-card,
+  .expiry-card {
+    min-height: 82px !important;
+    padding: 12px !important;
+  }
+
+  .stat-value {
+    font-size: 20px !important;
+  }
+
+  .expiry-card strong {
+    font-size: 19px !important;
+  }
+
+  .card-heading h2 {
+    font-size: 16px !important;
+  }
+
+  .section-subtext {
+    font-size: 9px !important;
+  }
+}

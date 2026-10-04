@@ -1,14 +1,5 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-
-import {
-  RefreshCcw,
-  X,
-} from 'lucide-react'
-
+import { useEffect, useState } from 'react'
+import { X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
 function nextDay(date) {
@@ -34,7 +25,9 @@ function addMonth(date) {
   const d =
     new Date(`${date}T00:00:00`)
 
-  d.setMonth(d.getMonth() + 1)
+  d.setMonth(
+    d.getMonth() + 1
+  )
 
   return d
     .toISOString()
@@ -61,6 +54,16 @@ export default function RenewEntryModal({
   useEffect(() => {
     if (!open || !entry) return
 
+    const hasGym =
+      Number(
+        entry.gym_amount || 0
+      ) > 0
+
+    const hasPT =
+      Number(
+        entry.pt_amount || 0
+      ) > 0
+
     const gymStart =
       nextDay(entry.gym_end)
 
@@ -68,15 +71,8 @@ export default function RenewEntryModal({
       nextDay(entry.pt_end)
 
     setForm({
-      renew_gym:
-        Number(
-          entry.gym_amount || 0
-        ) > 0,
-
-      renew_pt:
-        Number(
-          entry.pt_amount || 0
-        ) > 0,
+      renew_gym: hasGym,
+      renew_pt: hasPT,
 
       gym_amount:
         Number(
@@ -107,80 +103,11 @@ export default function RenewEntryModal({
         entry.payment_mode ||
         'cash',
 
-      amount_paid: 0,
+      amount_paid: '',
 
       notes: '',
     })
   }, [open, entry])
-
-  const preview = useMemo(() => {
-    if (!form) return null
-
-    const gym =
-      form.renew_gym
-        ? Number(
-            form.gym_amount || 0
-          )
-        : 0
-
-    const pt =
-      form.renew_pt
-        ? Number(
-            form.pt_amount || 0
-          )
-        : 0
-
-    const overlap =
-      gym > 0 &&
-      pt > 0 &&
-      form.gym_start &&
-      form.gym_end &&
-      form.pt_start &&
-      form.pt_end &&
-      form.gym_start <=
-        form.pt_end &&
-      form.pt_start <=
-        form.gym_end
-
-    if (overlap) {
-      const total = gym + pt
-
-      return {
-        label: 'Gym + PT',
-        rule: '50 / 50',
-        jk: total * 0.5,
-        trainer: total * 0.5,
-      }
-    }
-
-    if (pt > 0) {
-      return {
-        label:
-          gym > 0
-            ? 'Non-overlap'
-            : 'PT only',
-
-        rule:
-          gym > 0
-            ? 'Gym 100% + PT 60/40'
-            : '60 / 40',
-
-        jk:
-          gym +
-          pt * 0.6,
-
-        trainer:
-          pt * 0.4,
-      }
-    }
-
-    return {
-      label: 'Gym only',
-      rule: '100 / 0',
-      jk: gym,
-      trainer: 0,
-    }
-  }, [form])
 
   if (
     !open ||
@@ -250,71 +177,72 @@ export default function RenewEntryModal({
         )
       }
 
-      const { error:
-        insertError } =
-        await supabase
-          .from('member_entries')
-          .insert({
-            renewal_of:
-              entry.id,
+      const {
+        error: insertError,
+      } = await supabase
+        .from('member_entries')
+        .insert({
+          renewal_of:
+            entry.id,
 
-            customer_name:
-              entry.customer_name,
+          customer_name:
+            entry.customer_name,
 
-            customer_phone:
-              entry.customer_phone,
+          customer_phone:
+            entry.customer_phone,
 
-            trainer_id:
-              currentRole ===
-              'trainer'
-                ? currentUserId
-                : entry.trainer_id,
+          trainer_id:
+            currentRole ===
+            'trainer'
+              ? currentUserId
+              : entry.trainer_id,
 
-            joined_on:
-              new Date()
-                .toISOString()
-                .split('T')[0],
+          joined_on:
+            new Date()
+              .toISOString()
+              .split('T')[0],
 
-            gym_amount: gym,
+          gym_amount:
+            gym,
 
-            gym_start:
-              form.renew_gym
-                ? form.gym_start
-                : null,
+          gym_start:
+            form.renew_gym
+              ? form.gym_start
+              : null,
 
-            gym_end:
-              form.renew_gym
-                ? form.gym_end
-                : null,
+          gym_end:
+            form.renew_gym
+              ? form.gym_end
+              : null,
 
-            pt_amount: pt,
+          pt_amount:
+            pt,
 
-            pt_start:
-              form.renew_pt
-                ? form.pt_start
-                : null,
+          pt_start:
+            form.renew_pt
+              ? form.pt_start
+              : null,
 
-            pt_end:
-              form.renew_pt
-                ? form.pt_end
-                : null,
+          pt_end:
+            form.renew_pt
+              ? form.pt_end
+              : null,
 
-            payment_status:
-              form.payment_status,
+          payment_status:
+            form.payment_status,
 
-            payment_mode:
-              form.payment_mode,
+          payment_mode:
+            form.payment_mode,
 
-            amount_paid:
-              Number(
-                form.amount_paid ||
-                  0
-              ),
+          amount_paid:
+            Number(
+              form.amount_paid || 0
+            ),
 
-            notes:
-              form.notes ||
-              `Renewal of previous membership`,
-          })
+          notes:
+            form.notes.trim() ||
+            'Membership renewal',
+        })
 
       if (insertError) {
         throw insertError
@@ -351,6 +279,7 @@ export default function RenewEntryModal({
 
           <button
             className="icon-button"
+            type="button"
             onClick={onClose}
           >
             <X size={20} />
@@ -392,8 +321,7 @@ export default function RenewEntryModal({
               <span>
                 Previous ₹
                 {Number(
-                  entry.gym_amount ||
-                    0
+                  entry.gym_amount || 0
                 ).toLocaleString(
                   'en-IN'
                 )}
@@ -427,8 +355,7 @@ export default function RenewEntryModal({
               <span>
                 Previous ₹
                 {Number(
-                  entry.pt_amount ||
-                    0
+                  entry.pt_amount || 0
                 ).toLocaleString(
                   'en-IN'
                 )}
@@ -441,13 +368,13 @@ export default function RenewEntryModal({
             <div className="form-section">
 
               <h3>
-                Gym Renewal
+                Gym membership
               </h3>
 
               <div className="form-grid">
 
                 <label>
-                  Amount
+                  Gym amount
                   <input
                     type="number"
                     min="0"
@@ -464,7 +391,7 @@ export default function RenewEntryModal({
                 </label>
 
                 <label>
-                  Start
+                  Start date
                   <input
                     type="date"
                     value={
@@ -474,23 +401,23 @@ export default function RenewEntryModal({
                       const value =
                         e.target.value
 
-                      update(
-                        'gym_start',
-                        value
-                      )
-
-                      update(
-                        'gym_end',
-                        addMonth(
-                          value
-                        )
+                      setForm(
+                        (prev) => ({
+                          ...prev,
+                          gym_start:
+                            value,
+                          gym_end:
+                            addMonth(
+                              value
+                            ),
+                        })
                       )
                     }}
                   />
                 </label>
 
                 <label>
-                  Expiry
+                  Expiry date
                   <input
                     type="date"
                     value={
@@ -514,13 +441,13 @@ export default function RenewEntryModal({
             <div className="form-section">
 
               <h3>
-                Personal Training Renewal
+                Personal training
               </h3>
 
               <div className="form-grid">
 
                 <label>
-                  PT Amount
+                  PT amount
                   <input
                     type="number"
                     min="0"
@@ -537,7 +464,7 @@ export default function RenewEntryModal({
                 </label>
 
                 <label>
-                  Start
+                  Start date
                   <input
                     type="date"
                     value={
@@ -547,23 +474,23 @@ export default function RenewEntryModal({
                       const value =
                         e.target.value
 
-                      update(
-                        'pt_start',
-                        value
-                      )
-
-                      update(
-                        'pt_end',
-                        addMonth(
-                          value
-                        )
+                      setForm(
+                        (prev) => ({
+                          ...prev,
+                          pt_start:
+                            value,
+                          pt_end:
+                            addMonth(
+                              value
+                            ),
+                        })
                       )
                     }}
                   />
                 </label>
 
                 <label>
-                  Expiry
+                  Expiry date
                   <input
                     type="date"
                     value={
@@ -583,56 +510,6 @@ export default function RenewEntryModal({
             </div>
           )}
 
-          {preview && (
-            <div className="split-preview">
-
-              <div>
-                <span>
-                  NEW SPLIT
-                </span>
-
-                <strong>
-                  {preview.label}
-                </strong>
-
-                <small>
-                  {preview.rule}
-                </small>
-              </div>
-
-              <div className="split-money">
-
-                <div>
-                  <span>
-                    JK Fitness Zone
-                  </span>
-
-                  <strong>
-                    ₹
-                    {preview.jk.toLocaleString(
-                      'en-IN'
-                    )}
-                  </strong>
-                </div>
-
-                <div>
-                  <span>
-                    Trainer
-                  </span>
-
-                  <strong>
-                    ₹
-                    {preview.trainer.toLocaleString(
-                      'en-IN'
-                    )}
-                  </strong>
-                </div>
-
-              </div>
-
-            </div>
-          )}
-
           <div className="form-section">
 
             <h3>Payment</h3>
@@ -640,7 +517,7 @@ export default function RenewEntryModal({
             <div className="form-grid">
 
               <label>
-                Status
+                Payment status
                 <select
                   value={
                     form.payment_status
@@ -667,7 +544,7 @@ export default function RenewEntryModal({
               </label>
 
               <label>
-                Mode
+                Payment mode
                 <select
                   value={
                     form.payment_mode
@@ -720,6 +597,21 @@ export default function RenewEntryModal({
 
             </div>
 
+            <label className="full-label">
+              Notes
+              <textarea
+                rows="3"
+                placeholder="Optional notes..."
+                value={form.notes}
+                onChange={(e) =>
+                  update(
+                    'notes',
+                    e.target.value
+                  )
+                }
+              />
+            </label>
+
           </div>
 
           {error && (
@@ -731,8 +623,8 @@ export default function RenewEntryModal({
           <div className="modal-actions">
 
             <button
-              type="button"
               className="secondary-button"
+              type="button"
               onClick={onClose}
             >
               Cancel
@@ -740,12 +632,9 @@ export default function RenewEntryModal({
 
             <button
               className="primary-button"
+              type="submit"
               disabled={saving}
             >
-              <RefreshCcw
-                size={16}
-              />
-
               {saving
                 ? 'Renewing...'
                 : 'Confirm Renewal'}

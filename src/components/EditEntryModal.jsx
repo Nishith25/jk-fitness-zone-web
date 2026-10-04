@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
@@ -44,62 +44,6 @@ export default function EditEntryModal({
     }
   }, [entry, open])
 
-  const preview = useMemo(() => {
-    if (!form) return null
-
-    const gym = Number(form.gym_amount || 0)
-    const pt = Number(form.pt_amount || 0)
-
-    const overlap =
-      gym > 0 &&
-      pt > 0 &&
-      form.gym_start &&
-      form.gym_end &&
-      form.pt_start &&
-      form.pt_end &&
-      form.gym_start <= form.pt_end &&
-      form.pt_start <= form.gym_end
-
-    if (overlap) {
-      const total = gym + pt
-
-      return {
-        title: 'Gym + PT active together',
-        text: '50 / 50',
-        jk: total * 0.5,
-        trainer: total * 0.5,
-      }
-    }
-
-    if (pt > 0) {
-      return {
-        title:
-          gym > 0
-            ? 'Gym + PT do not overlap'
-            : 'PT only',
-
-        text:
-          gym > 0
-            ? 'Gym 100% + PT 60/40'
-            : '60 / 40',
-
-        jk:
-          gym +
-          pt * 0.6,
-
-        trainer:
-          pt * 0.4,
-      }
-    }
-
-    return {
-      title: 'Gym only',
-      text: '100 / 0',
-      jk: gym,
-      trainer: 0,
-    }
-  }, [form])
-
   if (!open || !form) return null
 
   function update(name, value) {
@@ -137,63 +81,84 @@ export default function EditEntryModal({
         )
       }
 
-      const { error: updateError } =
-        await supabase
-          .from('member_entries')
-          .update({
-            customer_name:
-              form.customer_name.trim(),
+      if (
+        gymAmount > 0 &&
+        (!form.gym_start ||
+          !form.gym_end)
+      ) {
+        throw new Error(
+          'Gym start and expiry dates are required.'
+        )
+      }
 
-            customer_phone:
-              form.customer_phone.trim() || null,
+      if (
+        ptAmount > 0 &&
+        (!form.pt_start ||
+          !form.pt_end)
+      ) {
+        throw new Error(
+          'PT start and expiry dates are required.'
+        )
+      }
 
-            trainer_id:
-              form.trainer_id || null,
+      const {
+        error: updateError,
+      } = await supabase
+        .from('member_entries')
+        .update({
+          customer_name:
+            form.customer_name.trim(),
 
-            joined_on:
-              form.joined_on,
+          customer_phone:
+            form.customer_phone.trim() || null,
 
-            gym_amount:
-              gymAmount,
+          trainer_id:
+            form.trainer_id || null,
 
-            gym_start:
-              gymAmount > 0
-                ? form.gym_start
-                : null,
+          joined_on:
+            form.joined_on,
 
-            gym_end:
-              gymAmount > 0
-                ? form.gym_end
-                : null,
+          gym_amount:
+            gymAmount,
 
-            pt_amount:
-              ptAmount,
+          gym_start:
+            gymAmount > 0
+              ? form.gym_start
+              : null,
 
-            pt_start:
-              ptAmount > 0
-                ? form.pt_start
-                : null,
+          gym_end:
+            gymAmount > 0
+              ? form.gym_end
+              : null,
 
-            pt_end:
-              ptAmount > 0
-                ? form.pt_end
-                : null,
+          pt_amount:
+            ptAmount,
 
-            payment_status:
-              form.payment_status,
+          pt_start:
+            ptAmount > 0
+              ? form.pt_start
+              : null,
 
-            payment_mode:
-              form.payment_mode,
+          pt_end:
+            ptAmount > 0
+              ? form.pt_end
+              : null,
 
-            amount_paid:
-              Number(
-                form.amount_paid || 0
-              ),
+          payment_status:
+            form.payment_status,
 
-            notes:
-              form.notes.trim() || null,
-          })
-          .eq('id', entry.id)
+          payment_mode:
+            form.payment_mode,
+
+          amount_paid:
+            Number(
+              form.amount_paid || 0
+            ),
+
+          notes:
+            form.notes.trim() || null,
+        })
+        .eq('id', entry.id)
 
       if (updateError) {
         throw updateError
@@ -203,7 +168,8 @@ export default function EditEntryModal({
       onClose()
     } catch (err) {
       setError(
-        err.message || 'Unable to update entry.'
+        err.message ||
+          'Unable to update entry.'
       )
     } finally {
       setSaving(false)
@@ -229,6 +195,7 @@ export default function EditEntryModal({
 
           <button
             className="icon-button"
+            type="button"
             onClick={onClose}
           >
             <X size={20} />
@@ -261,17 +228,17 @@ export default function EditEntryModal({
               </label>
 
               <label>
-                Mobile
+                Mobile number
                 <input
+                  inputMode="numeric"
                   maxLength="10"
                   value={form.customer_phone}
                   onChange={(e) =>
                     update(
                       'customer_phone',
-                      e.target.value.replace(
-                        /\D/g,
-                        ''
-                      )
+                      e.target.value
+                        .replace(/\D/g, '')
+                        .slice(0, 10)
                     )
                   }
                 />
@@ -306,14 +273,16 @@ export default function EditEntryModal({
                     No trainer
                   </option>
 
-                  {trainers.map((trainer) => (
-                    <option
-                      value={trainer.id}
-                      key={trainer.id}
-                    >
-                      {trainer.full_name}
-                    </option>
-                  ))}
+                  {trainers.map(
+                    (trainer) => (
+                      <option
+                        value={trainer.id}
+                        key={trainer.id}
+                      >
+                        {trainer.full_name}
+                      </option>
+                    )
+                  )}
                 </select>
               </label>
 
@@ -323,10 +292,7 @@ export default function EditEntryModal({
 
           <div className="form-section">
 
-            <div className="form-section-heading">
-              <h3>Gym</h3>
-              <span>Monthly membership</span>
-            </div>
+            <h3>Gym membership</h3>
 
             <div className="form-grid">
 
@@ -346,7 +312,7 @@ export default function EditEntryModal({
               </label>
 
               <label>
-                Start
+                Start date
                 <input
                   type="date"
                   value={form.gym_start}
@@ -360,7 +326,7 @@ export default function EditEntryModal({
               </label>
 
               <label>
-                Expiry
+                Expiry date
                 <input
                   type="date"
                   value={form.gym_end}
@@ -379,10 +345,7 @@ export default function EditEntryModal({
 
           <div className="form-section">
 
-            <div className="form-section-heading">
-              <h3>Personal Training</h3>
-              <span>PT membership</span>
-            </div>
+            <h3>Personal training</h3>
 
             <div className="form-grid">
 
@@ -402,7 +365,7 @@ export default function EditEntryModal({
               </label>
 
               <label>
-                Start
+                Start date
                 <input
                   type="date"
                   value={form.pt_start}
@@ -416,7 +379,7 @@ export default function EditEntryModal({
               </label>
 
               <label>
-                Expiry
+                Expiry date
                 <input
                   type="date"
                   value={form.pt_end}
@@ -433,54 +396,6 @@ export default function EditEntryModal({
 
           </div>
 
-          {preview && (
-            <div className="split-preview">
-
-              <div>
-                <span>
-                  CALCULATED SPLIT
-                </span>
-
-                <strong>
-                  {preview.title}
-                </strong>
-
-                <small>
-                  {preview.text}
-                </small>
-              </div>
-
-              <div className="split-money">
-
-                <div>
-                  <span>
-                    JK Fitness Zone
-                  </span>
-
-                  <strong>
-                    ₹
-                    {preview.jk.toLocaleString(
-                      'en-IN'
-                    )}
-                  </strong>
-                </div>
-
-                <div>
-                  <span>Trainer</span>
-
-                  <strong>
-                    ₹
-                    {preview.trainer.toLocaleString(
-                      'en-IN'
-                    )}
-                  </strong>
-                </div>
-
-              </div>
-
-            </div>
-          )}
-
           <div className="form-section">
 
             <h3>Payment</h3>
@@ -488,7 +403,7 @@ export default function EditEntryModal({
             <div className="form-grid">
 
               <label>
-                Status
+                Payment status
                 <select
                   value={form.payment_status}
                   onChange={(e) =>
@@ -513,7 +428,7 @@ export default function EditEntryModal({
               </label>
 
               <label>
-                Mode
+                Payment mode
                 <select
                   value={form.payment_mode}
                   onChange={(e) =>
@@ -573,6 +488,7 @@ export default function EditEntryModal({
                     e.target.value
                   )
                 }
+                placeholder="Optional notes..."
               />
             </label>
 
@@ -596,6 +512,7 @@ export default function EditEntryModal({
 
             <button
               className="primary-button"
+              type="submit"
               disabled={saving}
             >
               {saving

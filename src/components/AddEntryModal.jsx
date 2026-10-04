@@ -337,9 +337,7 @@ export default function AddEntryModal({
             <div className="form-section-heading">
               <h3>Gym membership</h3>
 
-              <span>
-                100% gym revenue if no active PT
-              </span>
+
             </div>
 
             <div className="form-grid">
@@ -396,9 +394,7 @@ export default function AddEntryModal({
             <div className="form-section-heading">
               <h3>Personal training</h3>
 
-              <span>
-                PT only = 60% / 40%
-              </span>
+
             </div>
 
             <div className="form-grid">
@@ -450,40 +446,7 @@ export default function AddEntryModal({
             </div>
           </div>
 
-          <div className="split-preview">
-
-            <div>
-              <span>CALCULATED SPLIT</span>
-              <strong>{preview.rule}</strong>
-              <small>{preview.text}</small>
-            </div>
-
-            <div className="split-money">
-
-              <div>
-                <span>JK Fitness Zone</span>
-
-                <strong>
-                  ₹
-                  {preview.admin.toLocaleString(
-                    'en-IN'
-                  )}
-                </strong>
-              </div>
-
-              <div>
-                <span>Trainer</span>
-
-                <strong>
-                  ₹
-                  {preview.trainer.toLocaleString(
-                    'en-IN'
-                  )}
-                </strong>
-              </div>
-
-            </div>
-          </div>
+          
 
           <div className="form-section">
 

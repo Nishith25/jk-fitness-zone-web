@@ -414,6 +414,17 @@ export default function AdminDashboard() {
     }, [monthEntries, search])
 
   async function logout() {
+    try {
+      await supabase.rpc('log_staff_event', {
+        event_action: 'logout',
+        event_details: {
+          portal: 'admin',
+        },
+      })
+    } catch (error) {
+      console.error('Unable to record logout:', error)
+    }
+
     await supabase.auth.signOut()
     navigate('/')
   }
@@ -1512,12 +1523,13 @@ function ActivityList({
 
       {activities.map((item) => {
 
+        const isSessionEvent =
+          item.table_name === 'staff_session'
+
         const customer =
-          item.new_data
-            ?.customer_name ||
-          item.old_data
-            ?.customer_name ||
-          'Customer'
+          item.new_data?.customer_name ||
+          item.old_data?.customer_name ||
+          (isSessionEvent ? '' : 'Customer')
 
         const changes =
           getChanges(item)
@@ -1546,18 +1558,35 @@ function ActivityList({
                 </strong>
 
                 <span>
-                  {item.action ===
-                  'insert'
-                    ? ' added '
-                    : item.action ===
-                        'update'
-                      ? ' updated '
-                      : ' deleted '}
+                  {item.action === 'login' && ' logged in'}
+                  {item.action === 'logout' && ' logged out'}
 
-                  <b>{customer}</b>
+                  {item.action === 'insert' && item.table_name === 'member_entries' && ' added '}
+                  {item.action === 'update' && item.table_name === 'member_entries' && ' updated '}
+                  {item.action === 'delete' && item.table_name === 'member_entries' && ' deleted '}
+
+                  {item.action === 'insert' && item.table_name === 'trainer_settlements' && ' created a trainer settlement'}
+                  {item.action === 'update' && item.table_name === 'trainer_settlements' && ' updated a trainer settlement'}
+                  {item.action === 'delete' && item.table_name === 'trainer_settlements' && ' deleted a trainer settlement'}
+
+                  {item.action === 'insert' && item.table_name === 'staff_profiles' && ' created a staff profile'}
+                  {item.action === 'update' && item.table_name === 'staff_profiles' && ' updated a staff profile'}
+                  {item.action === 'delete' && item.table_name === 'staff_profiles' && ' deleted a staff profile'}
+
+                  {customer && <b>{customer}</b>}
                 </span>
 
               </div>
+
+              {item.table_name === 'staff_session' && (
+                <div className="session-detail">
+                  <span>
+                    {item.new_data?.portal
+                      ? `Portal: ${item.new_data.portal}`
+                      : 'Staff session'}
+                  </span>
+                </div>
+              )}
 
               {changes.length > 0 && (
                 <div className="change-list">

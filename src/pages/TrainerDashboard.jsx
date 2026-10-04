@@ -169,6 +169,17 @@ export default function TrainerDashboard() {
   )
 
   async function logout() {
+    try {
+      await supabase.rpc('log_staff_event', {
+        event_action: 'logout',
+        event_details: {
+          portal: 'trainer',
+        },
+      })
+    } catch (error) {
+      console.error('Unable to record logout:', error)
+    }
+
     await supabase.auth.signOut()
     navigate('/')
   }

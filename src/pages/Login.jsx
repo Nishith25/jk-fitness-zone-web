@@ -86,6 +86,17 @@ export default function Login() {
         )
       }
 
+      await supabase.rpc('log_staff_event', {
+        event_action: 'login',
+        event_details: {
+          role: profile.role,
+          portal: profile.role === 'admin'
+            ? 'admin'
+            : 'trainer',
+          mobile: cleanedMobile,
+        },
+      })
+
       navigate(
         profile.role === 'admin'
           ? '/admin'

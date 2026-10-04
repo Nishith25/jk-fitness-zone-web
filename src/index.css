@@ -4182,3 +4182,14 @@ body {
     color: #ffffff;
   }
 }
+
+.session-detail {
+  margin-top: 6px;
+  color: #777;
+  font-size: 9px;
+}
+
+.activity-dot.login,
+.activity-dot.logout {
+  background: #777 !important;
+}

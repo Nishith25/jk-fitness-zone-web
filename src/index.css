@@ -5955,3 +5955,27 @@ textarea:focus {
     font-size: 10px;
   }
 }
+
+/* FINAL ENTRY SAVED MESSAGE */
+
+.save-success-message {
+  margin: 0 0 14px;
+  padding: 10px 13px;
+
+  border: 1px solid rgba(122, 203, 0, .32);
+  border-radius: 5px;
+
+  background: rgba(122, 203, 0, .08);
+  color: #dff4bd;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .save-success-message {
+    margin: 8px 12px 10px;
+    padding: 9px 11px;
+    font-size: 10px;
+  }
+}

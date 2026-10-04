@@ -112,13 +112,7 @@ function getChanges(item) {
 
   return Object.keys(FIELD_NAMES)
     .filter((key) => {
-      useEffect(() => {
-    if (!month) return
-
-    loadData()
-  }, [month])
-
-  return (
+      return (
         JSON.stringify(item.old_data[key]) !==
         JSON.stringify(item.new_data[key])
       )
@@ -1212,11 +1206,9 @@ export default function AdminDashboard() {
 
       <AddEntryModal
         open={modalOpen}
-
         onClose={() =>
           setModalOpen(false)
         }
-
         onSaved={(saved) => {
           const savedMonth =
             saved?.joined_on?.slice(0, 7)
@@ -1235,22 +1227,23 @@ export default function AdminDashboard() {
                 year: 'numeric',
               })
 
-            setMonth(savedMonth)
-            setTab('members')
-
             setSaveMessage(
               `Entry saved under ${monthName}`
             )
 
-            window.setTimeout(() => {
+            setMonth(savedMonth)
+            setTab('members')
+
+            setTimeout(() => {
               setSaveMessage('')
             }, 3500)
           }
 
           loadData()
         }}
-
-        currentUserId={profile?.id}
+        currentUserId={
+          profile?.id
+        }
         currentRole="admin"
       />
 

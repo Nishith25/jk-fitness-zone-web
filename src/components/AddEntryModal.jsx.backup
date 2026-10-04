@@ -21,12 +21,12 @@ const emptyForm = {
   pt_amount: '',
   pt_amount_mode: 'saved',
   custom_pt_amount: '',
-  pt_start: today(),
+  pt_start: '',
   pt_duration: '1M',
   pt_end: '',
 
   payment_status: 'paid',
-  payment_mode: 'upi',
+  payment_mode: 'cash',
   amount_paid: '',
   notes: '',
 }
@@ -531,22 +531,12 @@ export default function AddEntryModal({
                 <input
                   type="date"
                   value={form.joined_on}
-                  onChange={(e) => {
-                    const nextDate =
+                  onChange={(e) =>
+                    update(
+                      'joined_on',
                       e.target.value
-
-                    setForm((prev) => ({
-                      ...prev,
-                      joined_on: nextDate,
-
-                      pt_start:
-                        !prev.pt_start ||
-                        prev.pt_start ===
-                          prev.joined_on
-                          ? nextDate
-                          : prev.pt_start,
-                    }))
-                  }}
+                    )
+                  }
                 />
               </label>
 
@@ -608,16 +598,10 @@ export default function AddEntryModal({
                     } else {
                       setForm((prev) => ({
                         ...prev,
-
                         pt_amount_mode: 'saved',
-
                         pt_amount:
                           e.target.value,
-
                         custom_pt_amount: '',
-
-                        amount_paid:
-                          e.target.value,
                       }))
                     }
                   }}
@@ -650,15 +634,10 @@ export default function AddEntryModal({
                     min="0"
                     value={form.custom_pt_amount}
                     onChange={(e) =>
-                      setForm((prev) => ({
-                        ...prev,
-
-                        custom_pt_amount:
-                          e.target.value,
-
-                        amount_paid:
-                          e.target.value,
-                      }))
+                      update(
+                        'custom_pt_amount',
+                        e.target.value
+                      )
                     }
                     placeholder="₹0"
                   />

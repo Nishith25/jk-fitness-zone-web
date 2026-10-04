@@ -388,9 +388,6 @@ export default function TrainerDashboard() {
                       {entry.customer_name}
                     </strong>
 
-                    <span>
-                      {entry.customer_phone || 'No mobile'}
-                    </span>
                   </div>
 
                   <div>
@@ -456,22 +453,47 @@ export default function TrainerDashboard() {
                 <div className="activity-main">
 
                   <strong>
-                    {item.action.toUpperCase()}
+                    {item.action === 'login' && 'Logged in'}
+                    {item.action === 'logout' && 'Logged out'}
+
+                    {item.action === 'insert' &&
+                      item.table_name === 'member_entries' &&
+                      `Added ${item.new_data?.customer_name || 'customer'}`}
+
+                    {item.action === 'update' &&
+                      item.table_name === 'member_entries' &&
+                      `Updated ${
+                        item.new_data?.customer_name ||
+                        item.old_data?.customer_name ||
+                        'customer'
+                      }`}
+
+                    {item.action === 'delete' &&
+                      item.table_name === 'member_entries' &&
+                      `Deleted ${item.old_data?.customer_name || 'customer'}`}
+
+                    {item.action === 'insert' &&
+                      item.table_name === 'trainer_settlements' &&
+                      'Settlement created'}
+
+                    {item.action === 'update' &&
+                      item.table_name === 'trainer_settlements' &&
+                      'Settlement updated'}
                   </strong>
 
                   <small>
-                    {item.new_data?.customer_name ||
-                      item.old_data?.customer_name ||
-                      'Customer'}
+                    {item.table_name === 'staff_session'
+                      ? item.new_data?.portal
+                        ? `${item.new_data.portal} portal`
+                        : 'Staff session'
+                      : item.created_at
+                        ? new Date(item.created_at).toLocaleString('en-IN')
+                        : ''}
                   </small>
 
                 </div>
 
-                <time>
-                  {new Date(
-                    item.created_at
-                  ).toLocaleString('en-IN')}
-                </time>
+
 
               </div>
             ))}

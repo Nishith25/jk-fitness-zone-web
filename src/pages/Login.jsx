@@ -1,13 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Dumbbell,
-  LockKeyhole,
-  Phone,
-  ShieldCheck,
-  UserRound
-} from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import AppLogo from '../components/AppLogo'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -18,16 +12,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
-  const formatIndianPhone = (number) => {
-    const cleaned = number.replace(/\D/g, '')
-
-    if (cleaned.startsWith('91') && cleaned.length === 12) {
-      return `+${cleaned}`
-    }
-
-    return `+91${cleaned}`
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -35,18 +19,23 @@ export default function Login() {
     setErrorMessage('')
 
     try {
-      const cleanedMobile = mobile.replace(/\D/g, '')
+      const cleanedMobile =
+        mobile.replace(/\D/g, '')
 
       if (cleanedMobile.length !== 10) {
-        throw new Error('Enter a valid 10-digit mobile number.')
+        throw new Error(
+          'Enter a valid 10-digit mobile number.'
+        )
       }
 
-      const loginEmail = `${cleanedMobile}@jkfitnesszone.com`
+      const loginEmail =
+        `${cleanedMobile}@jkfitnesszone.com`
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: loginEmail,
-        password,
-      })
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email: loginEmail,
+          password,
+        })
 
       if (error) {
         throw error
@@ -54,38 +43,58 @@ export default function Login() {
 
       const user = data.user
 
-      const { data: profile, error: profileError } = await supabase
+      const {
+        data: profile,
+        error: profileError,
+      } = await supabase
         .from('staff_profiles')
-        .select('id, full_name, role, is_active')
+        .select(`
+          id,
+          full_name,
+          role,
+          is_active
+        `)
         .eq('id', user.id)
         .single()
 
-      if (profileError || !profile) {
+      if (
+        profileError ||
+        !profile
+      ) {
         await supabase.auth.signOut()
-        throw new Error('Staff profile not found.')
+
+        throw new Error(
+          'Staff profile not found.'
+        )
       }
 
       if (!profile.is_active) {
         await supabase.auth.signOut()
-        throw new Error('This account has been disabled.')
-      }
-
-      if (profile.role !== role) {
-        await supabase.auth.signOut()
 
         throw new Error(
-          `This account is registered as ${profile.role}. Select the correct login type.`
+          'This account has been disabled.'
         )
       }
 
-      if (profile.role === 'admin') {
-        navigate('/admin')
-      } else {
-        navigate('/trainer')
+      if (
+        profile.role !== role
+      ) {
+        await supabase.auth.signOut()
+
+        throw new Error(
+          `This account is registered as ${profile.role}.`
+        )
       }
+
+      navigate(
+        profile.role === 'admin'
+          ? '/admin'
+          : '/trainer'
+      )
     } catch (error) {
       setErrorMessage(
-        error.message || 'Unable to sign in. Check your mobile number and password.'
+        error.message ||
+          'Unable to sign in.'
       )
     } finally {
       setLoading(false)
@@ -93,50 +102,46 @@ export default function Login() {
   }
 
   return (
-    <div className="login-page">
-      <div className="login-glow login-glow-one" />
-      <div className="login-glow login-glow-two" />
+    <div className="mono-login-page">
 
-      <div className="login-shell">
+      <div className="mono-login-shell">
 
-        <section className="login-brand">
-          <div className="brand-mark">
-            <Dumbbell size={28} strokeWidth={2.2} />
-          </div>
+        <div className="mono-login-brand">
+          <AppLogo />
+        </div>
 
-          <div className="brand-copy">
-            <span>JK</span>
-            <strong>FITNESS ZONE</strong>
-          </div>
-        </section>
+        <main className="mono-login-card">
 
-        <main className="login-card">
+          <div className="mono-login-heading">
 
-          <div className="login-card-top">
-            <p className="eyebrow">MANAGEMENT PORTAL</p>
+            <span>
+              MANAGEMENT PORTAL
+            </span>
 
-            <h1>Welcome back.</h1>
+            <h1>
+              Welcome back.
+            </h1>
 
-            <p className="login-description">
+            <p>
               Sign in to manage members, personal training and monthly collections.
             </p>
+
           </div>
 
-          <div className="role-switch">
+          <div className="mono-role-switch">
 
             <button
               type="button"
               className={
                 role === 'admin'
-                  ? 'role-button active'
-                  : 'role-button'
+                  ? 'active'
+                  : ''
               }
               onClick={() => {
                 setRole('admin')
                 setErrorMessage('')
               }}
             >
-              <ShieldCheck size={18} />
               Admin
             </button>
 
@@ -144,34 +149,30 @@ export default function Login() {
               type="button"
               className={
                 role === 'trainer'
-                  ? 'role-button active'
-                  : 'role-button'
+                  ? 'active'
+                  : ''
               }
               onClick={() => {
                 setRole('trainer')
                 setErrorMessage('')
               }}
             >
-              <UserRound size={18} />
               Trainer
             </button>
 
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form
+            className="mono-login-form"
+            onSubmit={handleSubmit}
+          >
 
-            <label className="field-label">
+            <label>
               Mobile Number
 
-              <div className="input-wrap">
+              <div className="mono-phone-field">
 
-                <Phone size={18} />
-
-                <span style={{
-                  color: '#777',
-                  fontSize: '14px',
-                  whiteSpace: 'nowrap'
-                }}>
+                <span>
                   +91
                 </span>
 
@@ -181,44 +182,45 @@ export default function Login() {
                   maxLength="10"
                   placeholder="10-digit mobile number"
                   value={mobile}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '')
-                    setMobile(value.slice(0, 10))
-                  }}
+                  onChange={(e) =>
+                    setMobile(
+                      e.target.value
+                        .replace(/\D/g, '')
+                        .slice(0, 10)
+                    )
+                  }
                   required
                 />
 
               </div>
             </label>
 
-            <label className="field-label">
+            <label>
               Password
 
-              <div className="input-wrap">
-
-                <LockKeyhole size={18} />
-
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-
-              </div>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) =>
+                  setPassword(
+                    e.target.value
+                  )
+                }
+                required
+              />
             </label>
 
             {errorMessage && (
-              <div className="login-error">
+              <div className="mono-login-error">
                 {errorMessage}
               </div>
             )}
 
             <button
-              className="sign-in-button"
-              type="submit"
+              className="mono-login-submit"
               disabled={loading}
+              type="submit"
             >
               {loading
                 ? 'Signing in...'
@@ -226,24 +228,23 @@ export default function Login() {
                     role === 'admin'
                       ? 'Admin'
                       : 'Trainer'
-                  }`
-              }
+                  }`}
             </button>
 
           </form>
 
-          <div className="login-security">
-            <LockKeyhole size={14} />
+          <div className="mono-login-security">
             Secure access for JK Fitness Zone staff only
           </div>
 
         </main>
 
-        <p className="login-footer">
+        <div className="mono-login-footer">
           JK FITNESS ZONE · INTERNAL MANAGEMENT SYSTEM
-        </p>
+        </div>
 
       </div>
+
     </div>
   )
 }

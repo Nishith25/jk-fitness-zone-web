@@ -3910,3 +3910,247 @@ body {
     font-size: 9px !important;
   }
 }
+
+/* =========================================================
+   FINAL MONOCHROME LOGIN
+========================================================= */
+
+.mono-login-page {
+  min-height: 100vh;
+  background: #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 18px;
+}
+
+.mono-login-shell {
+  width: 100%;
+  max-width: 455px;
+}
+
+.mono-login-brand {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.mono-login-brand .jk-brand {
+  justify-content: center;
+}
+
+.mono-login-brand .jk-brand-logo {
+  width: 58px;
+  height: 58px;
+}
+
+.mono-login-brand .jk-brand-copy strong {
+  font-size: 15px;
+}
+
+.mono-login-card {
+  padding: 30px;
+  border: 1px solid #242424;
+  border-radius: 7px;
+  background: #0b0b0b;
+}
+
+.mono-login-heading > span {
+  color: #8a8a8a;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .17em;
+}
+
+.mono-login-heading h1 {
+  margin: 10px 0 0;
+  color: #ffffff;
+  font-size: 31px;
+  line-height: 1.1;
+  font-family: 'Manrope';
+  letter-spacing: -1px;
+}
+
+.mono-login-heading p {
+  margin: 12px 0 0;
+  color: #858585;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.mono-role-switch {
+  margin: 26px 0 22px;
+  padding: 4px;
+  border: 1px solid #242424;
+  border-radius: 6px;
+  background: #080808;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.mono-role-switch button {
+  min-height: 46px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: #777777;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.mono-role-switch button.active {
+  background: #151515;
+  border-color: #292929;
+  color: #ffffff;
+}
+
+.mono-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mono-login-form label {
+  color: #d8d8d8;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mono-login-form input,
+.mono-phone-field {
+  width: 100%;
+  min-height: 56px;
+  border: 1px solid #292929;
+  border-radius: 6px;
+  background: #0d0d0d;
+}
+
+.mono-login-form input {
+  padding: 0 15px;
+  outline: 0;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.mono-login-form input::placeholder {
+  color: #5f5f5f;
+}
+
+.mono-login-form input:focus,
+.mono-phone-field:focus-within {
+  border-color: #505050;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.05);
+}
+
+.mono-phone-field {
+  display: flex;
+  align-items: center;
+}
+
+.mono-phone-field > span {
+  padding-left: 15px;
+  color: #8a8a8a;
+  font-size: 14px;
+}
+
+.mono-phone-field input {
+  min-height: 54px;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.mono-login-submit {
+  min-height: 54px;
+  margin-top: 2px;
+  border: 1px solid #ffffff;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #070707;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.mono-login-submit:hover {
+  filter: brightness(.94);
+}
+
+.mono-login-submit:disabled {
+  opacity: .55;
+}
+
+.mono-login-error {
+  padding: 11px 12px;
+  border: 1px solid #343434;
+  border-radius: 5px;
+  background: #101010;
+  color: #d0d0d0;
+  font-size: 11px;
+}
+
+.mono-login-security {
+  margin-top: 22px;
+  padding-top: 17px;
+  border-top: 1px solid #1d1d1d;
+  color: #5f5f5f;
+  text-align: center;
+  font-size: 10px;
+}
+
+.mono-login-footer {
+  margin-top: 18px;
+  text-align: center;
+  color: #444444;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+@media (max-width: 600px) {
+  .mono-login-page {
+    min-height: 100dvh;
+    align-items: flex-start;
+    padding:
+      calc(30px + env(safe-area-inset-top))
+      14px
+      calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .mono-login-shell {
+    max-width: 100%;
+  }
+
+  .mono-login-brand {
+    margin-bottom: 22px;
+  }
+
+  .mono-login-brand .jk-brand-logo {
+    width: 52px;
+    height: 52px;
+  }
+
+  .mono-login-card {
+    padding: 22px 18px;
+  }
+
+  .mono-login-heading h1 {
+    font-size: 28px;
+  }
+
+  .mono-role-switch button {
+    min-height: 50px;
+  }
+
+  .mono-login-form input,
+  .mono-phone-field {
+    min-height: 58px;
+  }
+
+  .mono-login-submit {
+    min-height: 56px;
+  }
+}

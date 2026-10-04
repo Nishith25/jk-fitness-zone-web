@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import StatCard from '../components/StatCard'
 import AddEntryModal from '../components/AddEntryModal'
+import AppLogo from '../components/AppLogo'
 
 function money(value) {
   return `₹${Number(value || 0).toLocaleString('en-IN')}`
@@ -186,16 +187,7 @@ export default function TrainerDashboard() {
 
       <header className="trainer-header">
 
-        <div className="sidebar-brand">
-          <div className="mini-logo">
-            <Dumbbell size={21} />
-          </div>
-
-          <div>
-            <strong>JK</strong>
-            <span>FITNESS ZONE</span>
-          </div>
-        </div>
+        <AppLogo compact />
 
         <button
           className="logout-button compact"

@@ -38,6 +38,10 @@ import TrainerSettlements from '../components/TrainerSettlements'
 import { exportAdminReport } from '../utils/exportAdminReport'
 import { exportAdminExcel, exportAdminCSV } from '../utils/exportData'
 import DashboardCharts from '../components/DashboardCharts'
+import MobileExports from '../components/MobileExports'
+import MobileMemberCards from '../components/MobileMemberCards'
+import MobileBottomNav from '../components/MobileBottomNav'
+import AppLogo from '../components/AppLogo'
 import RenewEntryModal from '../components/RenewEntryModal'
 import ExpirySummary from '../components/ExpirySummary'
 import { getEntryExpiryStatus } from '../utils/membershipStatus'
@@ -522,18 +526,7 @@ export default function AdminDashboard() {
 
         <div className="sidebar-top">
 
-          <div className="sidebar-brand">
-
-            <div className="mini-logo">
-              <Dumbbell size={21} />
-            </div>
-
-            <div>
-              <strong>JK</strong>
-              <span>FITNESS ZONE</span>
-            </div>
-
-          </div>
+          <AppLogo compact />
 
           <button
             className="mobile-close"
@@ -729,6 +722,44 @@ export default function AdminDashboard() {
 
         </header>
 
+        <div className="mobile-tab-strip">
+          <button
+            className={tab === 'dashboard' ? 'mobile-tab-chip active' : 'mobile-tab-chip'}
+            onClick={() => setTab('dashboard')}
+          >
+            Dashboard
+          </button>
+
+          <button
+            className={tab === 'members' ? 'mobile-tab-chip active' : 'mobile-tab-chip'}
+            onClick={() => setTab('members')}
+          >
+            Members
+          </button>
+
+          <button
+            className={tab === 'trainers' ? 'mobile-tab-chip active' : 'mobile-tab-chip'}
+            onClick={() => setTab('trainers')}
+          >
+            Trainers
+          </button>
+
+          <button
+            className={tab === 'settlements' ? 'mobile-tab-chip active' : 'mobile-tab-chip'}
+            onClick={() => setTab('settlements')}
+          >
+            Settlements
+          </button>
+
+          <button
+            className={tab === 'activity' ? 'mobile-tab-chip active' : 'mobile-tab-chip'}
+            onClick={() => setTab('activity')}
+          >
+            Activity
+          </button>
+        </div>
+
+
         {tab === 'dashboard' && (
           <>
 
@@ -772,6 +803,31 @@ export default function AdminDashboard() {
 
             <ExpirySummary
               entries={entries}
+            />
+
+            <MobileExports
+              onPDF={() =>
+                exportAdminReport({
+                  month,
+                  entries,
+                  trainers,
+                  settlements,
+                })
+              }
+              onExcel={() =>
+                exportAdminExcel({
+                  month,
+                  entries,
+                  trainers,
+                  settlements,
+                })
+              }
+              onCSV={() =>
+                exportAdminCSV({
+                  month,
+                  entries,
+                })
+              }
             />
 
             <DashboardCharts
@@ -833,26 +889,35 @@ export default function AdminDashboard() {
 
               </div>
 
-              <EntriesTable
-                entries={
-                  activeMonthEntries.slice(
-                    0,
-                    8
-                  )
-                }
-                onEdit={
-                  setEditingEntry
-                }
-                onCancel={
-                  cancelEntry
-                }
-                onRestore={
-                  restoreEntry
-                }
-                onRenew={
-                  setRenewingEntry
-                }
-              />
+              <div className="desktop-member-view">
+                <EntriesTable
+                  entries={
+                    activeMonthEntries.slice(
+                      0,
+                      8
+                    )
+                  }
+                  onEdit={setEditingEntry}
+                  onCancel={cancelEntry}
+                  onRestore={restoreEntry}
+                  onRenew={setRenewingEntry}
+                />
+              </div>
+
+              <div className="mobile-member-view">
+                <MobileMemberCards
+                  entries={
+                    activeMonthEntries.slice(
+                      0,
+                      8
+                    )
+                  }
+                  onEdit={setEditingEntry}
+                  onCancel={cancelEntry}
+                  onRestore={restoreEntry}
+                  onRenew={setRenewingEntry}
+                />
+              </div>
 
             </section>
 
@@ -890,13 +955,25 @@ export default function AdminDashboard() {
 
             </div>
 
-            <EntriesTable
-              entries={filteredEntries}
-              onEdit={setEditingEntry}
-              onCancel={cancelEntry}
-              onRestore={restoreEntry}
-              onRenew={setRenewingEntry}
-            />
+            <div className="desktop-member-view">
+              <EntriesTable
+                entries={filteredEntries}
+                onEdit={setEditingEntry}
+                onCancel={cancelEntry}
+                onRestore={restoreEntry}
+                onRenew={setRenewingEntry}
+              />
+            </div>
+
+            <div className="mobile-member-view">
+              <MobileMemberCards
+                entries={filteredEntries}
+                onEdit={setEditingEntry}
+                onCancel={cancelEntry}
+                onRestore={restoreEntry}
+                onRenew={setRenewingEntry}
+              />
+            </div>
 
           </section>
         )}
@@ -1113,6 +1190,11 @@ export default function AdminDashboard() {
           setRenewingEntry(null)
         }
         onSaved={loadData}
+      />
+
+      <MobileBottomNav
+        active={tab}
+        onChange={setTab}
       />
 
       <TrainerManagerModal

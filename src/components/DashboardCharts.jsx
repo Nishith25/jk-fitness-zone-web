@@ -90,8 +90,7 @@ export default function DashboardCharts({
         const collected =
           monthEntries.reduce(
             (sum, entry) =>
-              sum +
-              Number(entry.amount_paid || 0),
+              sum + Number(entry.amount_paid || 0),
             0
           )
 
@@ -117,95 +116,75 @@ export default function DashboardCharts({
             <span className="section-kicker">
               REVENUE
             </span>
-
             <h3>Monthly breakdown</h3>
           </div>
         </div>
 
         <div className="chart-container">
-
-          <ResponsiveContainer
-            width="100%"
-            height={280}
-          >
-            <BarChart
-              data={revenueData}
-              barGap={7}
-            >
-              <CartesianGrid
-                stroke="#1d1d1d"
-                vertical={false}
-              />
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={revenueData} barGap={8}>
+              <CartesianGrid stroke="#1e1e1e" vertical={false} />
 
               <XAxis
                 dataKey="name"
-                tick={{
-                  fill: '#666',
-                  fontSize: 10,
-                }}
+                tick={{ fill: '#8a8a8a', fontSize: 10 }}
                 axisLine={false}
                 tickLine={false}
               />
 
               <YAxis
-                tick={{
-                  fill: '#555',
-                  fontSize: 9,
-                }}
+                tick={{ fill: '#727272', fontSize: 9 }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(value) =>
-                  `₹${Math.round(
-                    value / 1000
-                  )}k`
+                  `₹${Math.round(value / 1000)}k`
                 }
               />
 
               <Tooltip
-                formatter={(value) =>
-                  money(value)
-                }
+                formatter={(value) => money(value)}
                 contentStyle={{
-                  background: '#111',
-                  border: '1px solid #292929',
-                  borderRadius: 10,
+                  background: '#101010',
+                  border: '1px solid #2a2a2a',
+                  borderRadius: 12,
+                  color: '#f4f4f4',
                   fontSize: 11,
                 }}
+                labelStyle={{ color: '#dcdcdc' }}
               />
 
               <Legend
                 wrapperStyle={{
                   fontSize: 10,
+                  color: '#bdbdbd',
                 }}
               />
 
               <Bar
                 dataKey="Gym"
-                fill="#ff6a00"
-                radius={[5, 5, 0, 0]}
+                fill="#f2f2f2"
+                radius={[6, 6, 0, 0]}
               />
 
               <Bar
                 dataKey="PT"
-                fill="#ff9a50"
-                radius={[5, 5, 0, 0]}
+                fill="#b8b8b8"
+                radius={[6, 6, 0, 0]}
               />
 
               <Bar
                 dataKey="JK Fitness"
-                fill="#d6d6d6"
-                radius={[5, 5, 0, 0]}
+                fill="#7c7c7c"
+                radius={[6, 6, 0, 0]}
               />
 
               <Bar
                 dataKey="Trainers"
-                fill="#777777"
-                radius={[5, 5, 0, 0]}
+                fill="#4a4a4a"
+                radius={[6, 6, 0, 0]}
               />
-
             </BarChart>
           </ResponsiveContainer>
-
         </div>
 
       </div>
@@ -213,80 +192,71 @@ export default function DashboardCharts({
       <div className="chart-card">
 
         <div className="chart-heading">
-
           <div>
             <span className="section-kicker">
               TREND
             </span>
-
-            <h3>
-              Last 6 months
-            </h3>
+            <h3>Last 6 months</h3>
           </div>
-
         </div>
 
         <div className="chart-container">
-
-          <ResponsiveContainer
-            width="100%"
-            height={280}
-          >
-
-            <BarChart
-              data={trendData}
-            >
-              <CartesianGrid
-                stroke="#1d1d1d"
-                vertical={false}
-              />
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={trendData}>
+              <CartesianGrid stroke="#1e1e1e" vertical={false} />
 
               <XAxis
                 dataKey="month"
-                tick={{
-                  fill: '#666',
-                  fontSize: 10,
-                }}
+                tick={{ fill: '#8a8a8a', fontSize: 10 }}
                 axisLine={false}
                 tickLine={false}
               />
 
               <YAxis
-                tick={{
-                  fill: '#555',
-                  fontSize: 9,
-                }}
+                tick={{ fill: '#727272', fontSize: 9 }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(value) =>
-                  `₹${Math.round(
-                    value / 1000
-                  )}k`
+                  `₹${Math.round(value / 1000)}k`
                 }
               />
 
               <Tooltip
-                formatter={(value) =>
-                  money(value)
+                formatter={(value, name) =>
+                  name === 'Collected'
+                    ? money(value)
+                    : value
                 }
                 contentStyle={{
-                  background: '#111',
-                  border: '1px solid #292929',
-                  borderRadius: 10,
+                  background: '#101010',
+                  border: '1px solid #2a2a2a',
+                  borderRadius: 12,
+                  color: '#f4f4f4',
                   fontSize: 11,
+                }}
+                labelStyle={{ color: '#dcdcdc' }}
+              />
+
+              <Legend
+                wrapperStyle={{
+                  fontSize: 10,
+                  color: '#bdbdbd',
                 }}
               />
 
               <Bar
                 dataKey="Collected"
-                fill="#ff6a00"
-                radius={[5, 5, 0, 0]}
+                fill="#e8e8e8"
+                radius={[6, 6, 0, 0]}
               />
 
+              <Bar
+                dataKey="Joinings"
+                fill="#5b5b5b"
+                radius={[6, 6, 0, 0]}
+              />
             </BarChart>
-
           </ResponsiveContainer>
-
         </div>
 
       </div>

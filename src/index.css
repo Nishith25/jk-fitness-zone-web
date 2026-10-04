@@ -2114,3 +2114,1799 @@ button {
     flex: 1;
   }
 }
+
+/* =========================================================
+   FINAL MONOCHROME + MOBILE FIRST UI POLISH
+========================================================= */
+
+body {
+  background: #050505;
+  color: #f5f5f5;
+}
+
+.section-kicker {
+  color: #d0d0d0 !important;
+  letter-spacing: 0.18em;
+}
+
+.mini-logo,
+.avatar-circle,
+.avatar-circle.big {
+  background: linear-gradient(180deg, #1f1f1f, #101010) !important;
+  color: #ffffff !important;
+  border: 1px solid #2d2d2d !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.sidebar,
+.content-card,
+.chart-card,
+.expiry-card,
+.trainer-payment-card,
+.admin-trainer-card,
+.stat-card,
+.revenue-strip,
+.entry-modal,
+.trainer-manager-modal {
+  background: #0a0a0a !important;
+  border-color: #1e1e1e !important;
+}
+
+.side-nav-item,
+.logout-button,
+.icon-button,
+.secondary-button,
+.export-button,
+.table-actions button,
+.trainer-toggle,
+.salary-editor button {
+  background: #111111 !important;
+  color: #ededed !important;
+  border-color: #272727 !important;
+}
+
+.side-nav-item.active,
+.mobile-tab-chip.active {
+  background: #171717 !important;
+  color: #ffffff !important;
+  border: 1px solid #2d2d2d !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+}
+
+.primary-button {
+  background: #f2f2f2 !important;
+  color: #090909 !important;
+  border: 1px solid #f2f2f2 !important;
+}
+
+.primary-button:hover {
+  filter: brightness(0.94);
+}
+
+.secondary-button:hover,
+.export-button:hover,
+.logout-button:hover,
+.side-nav-item:hover,
+.icon-button:hover,
+.table-actions button:hover,
+.trainer-toggle:hover,
+.salary-editor button:hover {
+  background: #151515 !important;
+  border-color: #353535 !important;
+  color: #ffffff !important;
+}
+
+.status-pill,
+.split-pill,
+.settlement-status,
+.trainer-status,
+.cancelled-label {
+  border: 1px solid #2b2b2b;
+}
+
+.status-pill.paid,
+.status-pill.partial,
+.status-pill.pending,
+.split-pill,
+.settlement-status.paid,
+.settlement-status.pending,
+.trainer-status,
+.trainer-status.active {
+  background: #121212 !important;
+  color: #efefef !important;
+}
+
+.membership-status.active {
+  color: #ffffff;
+}
+
+.membership-status.critical {
+  color: #f3f3f3;
+}
+
+.membership-status.warning {
+  color: #cdcdcd;
+}
+
+.membership-status.notice {
+  color: #a9a9a9;
+}
+
+.membership-status.expired {
+  color: #7a7a7a;
+}
+
+.chart-card,
+.content-card,
+.expiry-card,
+.admin-trainer-card,
+.stat-card,
+.revenue-strip,
+.trainer-payment-card {
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+
+.entry-form label,
+.form-grid label,
+.full-label,
+.trainer-create-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #d8d8d8;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.entry-form input,
+.entry-form select,
+.entry-form textarea,
+.trainer-create-card input,
+.salary-editor input,
+.month-picker,
+.search-box input {
+  min-height: 52px;
+  border-radius: 14px;
+  border: 1px solid #2b2b2b !important;
+  background: #0d0d0d !important;
+  color: #ffffff !important;
+  font-size: 16px !important;
+  padding: 14px 16px !important;
+  outline: none;
+}
+
+.entry-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.entry-form input::placeholder,
+.entry-form textarea::placeholder,
+.trainer-create-card input::placeholder,
+.search-box input::placeholder {
+  color: #666;
+}
+
+.entry-form input:focus,
+.entry-form select:focus,
+.entry-form textarea:focus,
+.trainer-create-card input:focus,
+.salary-editor input:focus,
+.month-picker:focus,
+.search-box input:focus {
+  border-color: #535353 !important;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.06);
+}
+
+.form-grid {
+  gap: 16px;
+}
+
+.form-section {
+  padding: 18px;
+  border: 1px solid #1b1b1b;
+  border-radius: 16px;
+  background: #0b0b0b;
+}
+
+.form-section h3 {
+  margin-bottom: 14px;
+}
+
+.split-preview {
+  border: 1px solid #242424;
+  background: #0b0b0b;
+}
+
+.modal-header {
+  border-bottom: 1px solid #1d1d1d;
+}
+
+.modal-actions {
+  gap: 10px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  min-width: 1050px;
+}
+
+.revenue-strip {
+  gap: 12px;
+}
+
+.revenue-strip > div,
+.trainer-card-stats > div {
+  background: #0d0d0d;
+  border: 1px solid #1b1b1b;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.mobile-tab-strip {
+  display: none;
+}
+
+.mobile-tab-chip {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid #242424;
+  background: #101010;
+  color: #cfcfcf;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dashboard-header {
+  gap: 14px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.export-group {
+  display: flex;
+  gap: 8px;
+}
+
+.search-box {
+  min-width: 240px;
+}
+
+.search-box input {
+  min-height: 46px;
+  padding-left: 12px !important;
+}
+
+.month-picker {
+  min-width: 150px;
+}
+
+@media (max-width: 980px) {
+  .dashboard-chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-trainer-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .expiry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .sidebar {
+    display: none !important;
+  }
+
+  .main-content {
+    width: 100%;
+    margin: 0;
+    padding: 14px;
+  }
+
+  .dashboard-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .header-actions > * {
+    flex: 1 1 auto;
+  }
+
+  .export-group {
+    width: 100%;
+    order: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .export-group .export-button,
+  .primary-button,
+  .secondary-button {
+    min-height: 50px;
+    font-size: 14px;
+    justify-content: center;
+  }
+
+  .mobile-tab-strip {
+    margin: 0 auto 12px;
+    padding-bottom: 4px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .content-card,
+  .chart-card,
+  .trainer-payment-card,
+  .expiry-card,
+  .admin-trainer-card,
+  .stat-card {
+    border-radius: 16px;
+  }
+
+  .entry-modal,
+  .trainer-manager-modal {
+    width: 100vw !important;
+    max-width: none !important;
+    min-height: 100dvh;
+    margin: 0;
+    border-radius: 0 !important;
+  }
+
+  .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #090909;
+    padding: 18px;
+  }
+
+  .entry-form,
+  .trainer-manager-body {
+    padding: 16px !important;
+  }
+
+  .form-grid,
+  .trainer-create-grid,
+  .renew-choice-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .modal-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    padding: 14px 0 4px;
+    background: linear-gradient(180deg, rgba(9,9,9,0), rgba(9,9,9,.95) 18%, rgba(9,9,9,1) 45%);
+  }
+
+  .modal-actions button {
+    flex: 1;
+    min-height: 52px;
+    font-size: 15px;
+  }
+
+  .stats-grid,
+  .trainer-stats,
+  .expiry-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .revenue-strip {
+    grid-template-columns: 1fr !important;
+    display: grid;
+  }
+
+  .settlement-row,
+  .salary-settlement-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .salary-row {
+    align-items: stretch !important;
+    flex-wrap: wrap;
+  }
+
+  .salary-editor {
+    width: 100%;
+  }
+
+  .salary-editor input {
+    flex: 1;
+  }
+
+  .search-box {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .month-picker {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   FINAL BLACK-WHITE MONOCHROME BOX UI
+========================================================= */
+
+:root {
+  --bg: #050505;
+  --panel: #0b0b0b;
+  --panel-2: #101010;
+  --line: #232323;
+  --line-2: #2d2d2d;
+  --text: #f3f3f3;
+  --muted: #9c9c9c;
+  --muted-2: #767676;
+  --white: #ffffff;
+  --soft: #dcdcdc;
+}
+
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Remove loud accent feel */
+.section-kicker {
+  color: var(--muted) !important;
+  letter-spacing: 0.16em;
+}
+
+/* Real logo block */
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-logo.compact {
+  align-items: center;
+}
+
+.app-logo-image {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  display: block;
+  filter: grayscale(1) contrast(1.1) brightness(1.05);
+  background: #fff;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.app-logo.compact .app-logo-image {
+  width: 46px;
+  height: 46px;
+}
+
+.app-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-logo-text strong {
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--white);
+}
+
+.app-logo-text span {
+  margin-top: 4px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+/* Box cards everywhere */
+.content-card,
+.chart-card,
+.expiry-card,
+.stat-card,
+.admin-trainer-card,
+.trainer-payment-card,
+.entry-modal,
+.trainer-manager-modal,
+.revenue-strip > div {
+  background: var(--panel) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+/* Side bar */
+.sidebar {
+  background: #070707 !important;
+  border-right: 1px solid var(--line) !important;
+}
+
+.side-nav-item {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
+  color: var(--soft) !important;
+}
+
+.side-nav-item.active {
+  background: var(--panel-2) !important;
+  border-color: var(--line) !important;
+  color: var(--white) !important;
+}
+
+.side-nav-item:hover {
+  background: #0f0f0f !important;
+  border-color: var(--line) !important;
+}
+
+/* Hide decorative nav icons */
+.side-nav-item svg,
+.logout-button svg,
+.primary-button svg,
+.secondary-button svg,
+.export-button svg,
+.chart-heading svg,
+.stat-card svg,
+.expiry-card svg {
+  display: none !important;
+}
+
+/* Buttons simple */
+.primary-button,
+.secondary-button,
+.export-button,
+.logout-button,
+.trainer-toggle,
+.salary-editor button {
+  min-height: 46px;
+  padding: 0 16px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  font-weight: 700;
+  box-shadow: none !important;
+}
+
+.primary-button {
+  background: var(--white) !important;
+  color: #080808 !important;
+  border: 1px solid var(--white) !important;
+}
+
+.primary-button:hover {
+  filter: brightness(0.95);
+}
+
+.secondary-button,
+.export-button,
+.logout-button,
+.trainer-toggle,
+.salary-editor button {
+  background: #121212 !important;
+  color: var(--text) !important;
+  border: 1px solid var(--line-2) !important;
+}
+
+.secondary-button:hover,
+.export-button:hover,
+.logout-button:hover,
+.trainer-toggle:hover,
+.salary-editor button:hover {
+  background: #171717 !important;
+  color: var(--white) !important;
+}
+
+/* Headers */
+.dashboard-header h1,
+.trainer-welcome h1,
+.card-heading h2,
+.chart-heading h3,
+.trainer-payment-card h3 {
+  color: var(--white) !important;
+}
+
+/* Text only stat cards */
+.stat-card {
+  min-height: 96px;
+  padding: 18px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  margin-top: 10px;
+  color: var(--white);
+  font-size: 26px;
+  line-height: 1.1;
+  font-family: 'Manrope';
+}
+
+/* Expiry cards simplified */
+.expiry-grid {
+  gap: 12px;
+}
+
+.expiry-card {
+  min-height: 90px;
+  padding: 18px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start !important;
+  justify-content: center;
+  gap: 8px !important;
+}
+
+.expiry-card strong {
+  font-size: 24px !important;
+  color: var(--white) !important;
+}
+
+.expiry-card span {
+  color: var(--muted) !important;
+  font-size: 12px !important;
+}
+
+/* Revenue / trainer small boxes */
+.revenue-strip {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px !important;
+}
+
+.revenue-strip > div,
+.trainer-card-stats > div {
+  background: #0f0f0f !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 6px !important;
+  padding: 14px !important;
+}
+
+/* Logo / avatars */
+.avatar-circle,
+.avatar-circle.big,
+.mini-logo {
+  border-radius: 6px !important;
+  background: #111 !important;
+  border: 1px solid var(--line) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  min-width: 1050px;
+}
+
+.data-table th {
+  background: #101010;
+  color: #dcdcdc;
+  border-bottom: 1px solid var(--line);
+}
+
+.data-table td {
+  color: #ededed;
+  border-bottom: 1px solid #161616;
+}
+
+/* Membership statuses monochrome */
+.membership-status.active,
+.membership-status.critical,
+.membership-status.warning,
+.membership-status.notice {
+  color: #ffffff !important;
+}
+
+.membership-status.expired {
+  color: #7d7d7d !important;
+}
+
+/* Inputs - easy to fill */
+.entry-form input,
+.entry-form select,
+.entry-form textarea,
+.trainer-create-card input,
+.salary-editor input,
+.month-picker,
+.search-box input {
+  min-height: 54px !important;
+  background: #0f0f0f !important;
+  color: #ffffff !important;
+  border: 1px solid var(--line-2) !important;
+  border-radius: 6px !important;
+  padding: 14px 16px !important;
+  font-size: 16px !important;
+  box-shadow: none !important;
+}
+
+.entry-form textarea {
+  min-height: 120px !important;
+}
+
+.entry-form input::placeholder,
+.entry-form textarea::placeholder,
+.trainer-create-card input::placeholder,
+.search-box input::placeholder {
+  color: #6f6f6f !important;
+}
+
+.entry-form input:focus,
+.entry-form select:focus,
+.entry-form textarea:focus,
+.trainer-create-card input:focus,
+.salary-editor input:focus,
+.month-picker:focus,
+.search-box input:focus {
+  border-color: #4a4a4a !important;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.06) !important;
+  outline: none !important;
+}
+
+.entry-form label,
+.form-grid label,
+.trainer-create-card label {
+  color: #e2e2e2 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  gap: 8px !important;
+}
+
+.form-grid {
+  gap: 16px !important;
+}
+
+.form-section {
+  background: #0d0d0d !important;
+  border: 1px solid #1d1d1d !important;
+  border-radius: 6px !important;
+  padding: 18px !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid #1a1a1a !important;
+}
+
+.split-preview {
+  background: #0f0f0f !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 6px !important;
+}
+
+/* Charts */
+.chart-card {
+  padding: 20px !important;
+}
+
+/* Mobile chips */
+.mobile-tab-chip {
+  border-radius: 6px !important;
+  background: #101010 !important;
+  color: #d5d5d5 !important;
+  border: 1px solid var(--line) !important;
+}
+
+.mobile-tab-chip.active {
+  background: #171717 !important;
+  color: #ffffff !important;
+}
+
+/* Better mobile-first layout */
+@media (max-width: 760px) {
+  .sidebar {
+    display: none !important;
+  }
+
+  .main-content {
+    width: 100%;
+    margin: 0;
+    padding: 14px !important;
+  }
+
+  .dashboard-header,
+  .trainer-welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 12px;
+  }
+
+  .header-actions,
+  .trainer-header-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .header-actions > *,
+  .trainer-header-actions > * {
+    flex: 1 1 auto;
+  }
+
+  .month-picker,
+  .search-box,
+  .search-box input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .export-group {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .export-group .export-button,
+  .primary-button,
+  .secondary-button {
+    min-height: 50px !important;
+    justify-content: center !important;
+  }
+
+  .mobile-tab-strip {
+    margin: 0 auto 12px;
+    display: flex !important;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stats-grid,
+  .trainer-stats,
+  .expiry-grid,
+  .dashboard-chart-grid,
+  .revenue-strip {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-trainer-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .settlement-row,
+  .salary-settlement-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .salary-row {
+    align-items: stretch !important;
+    flex-wrap: wrap;
+  }
+
+  .salary-editor {
+    width: 100%;
+  }
+
+  .salary-editor input {
+    flex: 1;
+  }
+
+  .entry-modal,
+  .trainer-manager-modal {
+    width: 100vw !important;
+    max-width: none !important;
+    min-height: 100dvh;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #0a0a0a !important;
+    padding: 16px !important;
+  }
+
+  .entry-form,
+  .trainer-manager-body {
+    padding: 16px !important;
+  }
+
+  .form-grid,
+  .renew-choice-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .modal-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background: #0a0a0a !important;
+    padding-top: 14px !important;
+  }
+
+  .modal-actions button {
+    flex: 1;
+    min-height: 52px !important;
+  }
+
+  .data-table {
+    min-width: 960px;
+  }
+
+  .app-logo-text strong {
+    font-size: 12px;
+  }
+
+  .app-logo-text span {
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   FINAL MOBILE APP EXPERIENCE
+========================================================= */
+
+.mobile-member-view,
+.mobile-export-box,
+.mobile-bottom-nav {
+  display: none;
+}
+
+/* REAL JK LOGO */
+
+.jk-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.jk-brand-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  padding: 4px;
+  background: #ffffff;
+  border: 1px solid #242424;
+  border-radius: 5px;
+  filter: grayscale(1);
+}
+
+.jk-brand-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.jk-brand-copy strong {
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.1;
+  letter-spacing: .04em;
+}
+
+.jk-brand-copy span {
+  margin-top: 4px;
+  color: #777777;
+  font-size: 8px;
+  letter-spacing: .15em;
+}
+
+/* MOBILE */
+
+@media (max-width: 760px) {
+
+  html,
+  body,
+  #root {
+    background: #050505;
+    overflow-x: hidden;
+  }
+
+  body {
+    padding-bottom: 82px;
+  }
+
+  .sidebar {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding:
+      max(16px, env(safe-area-inset-top))
+      14px
+      100px !important;
+  }
+
+  /* HEADER */
+
+  .dashboard-header {
+    position: relative;
+    margin-bottom: 14px;
+    padding: 4px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .header-left {
+    width: 100%;
+  }
+
+  .mobile-menu-button {
+    display: none !important;
+  }
+
+  .dashboard-header h1 {
+    margin-top: 5px;
+    font-size: 27px !important;
+    line-height: 1.1;
+  }
+
+  .section-kicker {
+    font-size: 9px !important;
+  }
+
+  /* ACTIONS */
+
+  .header-actions {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+
+  .header-actions .month-picker {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 52px !important;
+  }
+
+  .header-actions .export-group {
+    display: none !important;
+  }
+
+  .header-actions > .primary-button {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 54px !important;
+    font-size: 15px !important;
+  }
+
+  /* REMOVE OLD TOP MOBILE CHIP NAV */
+
+  .mobile-tab-strip {
+    display: none !important;
+  }
+
+  /* METRICS */
+
+  .stats-grid {
+    display: grid !important;
+    grid-template-columns:
+      repeat(2, minmax(0,1fr)) !important;
+    gap: 9px !important;
+  }
+
+  .stat-card {
+    min-height: 105px !important;
+    padding: 16px !important;
+    border-radius: 6px !important;
+  }
+
+  .stat-label {
+    line-height: 1.4;
+    font-size: 9px !important;
+  }
+
+  .stat-value {
+    margin-top: 12px;
+    font-size: 23px !important;
+  }
+
+  /* EXPIRY */
+
+  .expiry-grid {
+    display: grid !important;
+    grid-template-columns:
+      repeat(2, minmax(0,1fr)) !important;
+    gap: 9px !important;
+  }
+
+  .expiry-card {
+    min-height: 94px !important;
+    padding: 15px !important;
+  }
+
+  .expiry-card strong {
+    font-size: 23px !important;
+  }
+
+  .expiry-card span {
+    font-size: 10px !important;
+    line-height: 1.45;
+  }
+
+  /* HIDE LARGE CHARTS ON PHONE */
+
+  .dashboard-chart-grid {
+    display: none !important;
+  }
+
+  /* REVENUE */
+
+  .revenue-strip {
+    display: grid !important;
+    grid-template-columns:
+      repeat(3, minmax(0,1fr)) !important;
+    gap: 9px !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .revenue-strip > div {
+    min-width: 0;
+    padding: 14px 10px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+  }
+
+  .revenue-strip span {
+    font-size: 9px !important;
+  }
+
+  .revenue-strip strong {
+    font-size: 15px !important;
+    word-break: break-word;
+  }
+
+  /* CONTENT BOX */
+
+  .content-card {
+    margin-top: 12px !important;
+    padding: 15px !important;
+    border-radius: 6px !important;
+  }
+
+  .card-heading {
+    margin-bottom: 14px !important;
+  }
+
+  .card-heading h2 {
+    font-size: 17px !important;
+  }
+
+  /* TABLE -> MOBILE CARDS */
+
+  .desktop-member-view {
+    display: none !important;
+  }
+
+  .mobile-member-view {
+    display: block !important;
+  }
+
+  .mobile-member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mobile-member-card {
+    padding: 15px;
+    border: 1px solid #242424;
+    border-radius: 6px;
+    background: #0c0c0c;
+  }
+
+  .mobile-member-card.cancelled {
+    opacity: .5;
+  }
+
+  .mobile-member-head {
+    padding-bottom: 13px;
+    border-bottom: 1px solid #1d1d1d;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .mobile-member-head > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-member-head strong {
+    color: #ffffff;
+    font-size: 15px;
+  }
+
+  .mobile-member-head span {
+    margin-top: 4px;
+    color: #777777;
+    font-size: 11px;
+  }
+
+  .mobile-payment-status {
+    flex: 0 0 auto;
+    margin: 0 !important;
+    padding: 5px 8px;
+    border: 1px solid #292929;
+    border-radius: 4px;
+    color: #dedede !important;
+    background: #111111;
+    font-size: 9px !important;
+    text-transform: uppercase;
+  }
+
+  .mobile-member-grid {
+    margin-top: 13px;
+    display: grid;
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+    gap: 9px;
+  }
+
+  .mobile-member-grid > div {
+    min-height: 84px;
+    padding: 11px;
+    border: 1px solid #1d1d1d;
+    border-radius: 5px;
+    background: #0f0f0f;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-member-grid span {
+    color: #777777;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  .mobile-member-grid strong {
+    margin-top: 6px;
+    color: #ffffff;
+    font-size: 15px;
+  }
+
+  .mobile-member-grid small {
+    margin-top: 4px;
+    color: #777777;
+    font-size: 9px;
+    line-height: 1.4;
+  }
+
+  .mobile-membership-state.active,
+  .mobile-membership-state.critical,
+  .mobile-membership-state.warning,
+  .mobile-membership-state.notice {
+    color: #dedede !important;
+  }
+
+  .mobile-membership-state.expired {
+    color: #666666 !important;
+  }
+
+  .mobile-member-paid {
+    margin-top: 9px;
+    padding: 12px;
+    border: 1px solid #1d1d1d;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mobile-member-paid span {
+    color: #777;
+    font-size: 10px;
+  }
+
+  .mobile-member-paid strong {
+    font-size: 15px;
+  }
+
+  .mobile-member-actions {
+    margin-top: 11px;
+    display: grid;
+    grid-template-columns:
+      repeat(3,1fr);
+    gap: 7px;
+  }
+
+  .mobile-member-actions button {
+    min-height: 44px;
+    padding: 0 8px;
+    border: 1px solid #2a2a2a;
+    border-radius: 5px;
+    background: #111111;
+    color: #eeeeee;
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  .mobile-member-actions button.danger {
+    color: #aaaaaa;
+  }
+
+  .mobile-empty-box {
+    min-height: 130px;
+    padding: 20px;
+    border: 1px solid #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-empty-box strong {
+    font-size: 14px;
+  }
+
+  .mobile-empty-box span {
+    margin-top: 5px;
+    color: #777;
+    font-size: 10px;
+  }
+
+  /* EXPORT BOX */
+
+  .mobile-export-box {
+    margin-top: 12px;
+    padding: 15px;
+    border: 1px solid #222222;
+    border-radius: 6px;
+    background: #0b0b0b;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .mobile-export-box > div:first-child {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-export-box span {
+    color: #777;
+    font-size: 8px;
+    letter-spacing: .14em;
+  }
+
+  .mobile-export-box strong {
+    margin-top: 5px;
+    font-size: 12px;
+  }
+
+  .mobile-export-actions {
+    display: flex;
+    gap: 5px;
+  }
+
+  .mobile-export-actions button {
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid #292929;
+    border-radius: 5px;
+    background: #111;
+    color: #eee;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  /* FORM MODAL */
+
+  .modal-backdrop {
+    padding: 0 !important;
+  }
+
+  .entry-modal,
+  .trainer-manager-modal {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 100dvh;
+    border: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .modal-header {
+    min-height: 72px;
+    padding:
+      calc(14px + env(safe-area-inset-top))
+      16px
+      14px !important;
+    border-bottom: 1px solid #222 !important;
+  }
+
+  .modal-header h2 {
+    font-size: 19px !important;
+  }
+
+  .icon-button {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 5px !important;
+  }
+
+  .entry-form,
+  .trainer-manager-body {
+    padding: 14px !important;
+  }
+
+  .form-section {
+    margin-bottom: 10px !important;
+    padding: 15px !important;
+    border: 1px solid #202020 !important;
+    border-radius: 6px !important;
+  }
+
+  .form-section h3 {
+    margin-bottom: 14px !important;
+    font-size: 14px !important;
+  }
+
+  .form-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .entry-form label,
+  .form-grid label,
+  .full-label,
+  .trainer-create-card label {
+    color: #d8d8d8 !important;
+    font-size: 12px !important;
+    line-height: 1.4;
+  }
+
+  .entry-form input,
+  .entry-form select,
+  .entry-form textarea,
+  .trainer-create-card input {
+    width: 100%;
+    min-height: 56px !important;
+    margin-top: 0 !important;
+    padding: 15px !important;
+    border-radius: 6px !important;
+    font-size: 16px !important;
+  }
+
+  .entry-form textarea {
+    min-height: 100px !important;
+  }
+
+  .split-preview {
+    margin: 10px 0 !important;
+    padding: 15px !important;
+    border-radius: 6px !important;
+  }
+
+  .split-money {
+    margin-top: 13px;
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px !important;
+  }
+
+  .split-money > div {
+    text-align: left !important;
+  }
+
+  .modal-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    margin: 0 -14px -14px;
+    padding:
+      12px 14px
+      calc(12px + env(safe-area-inset-bottom));
+    background: #080808 !important;
+    border-top: 1px solid #222222 !important;
+  }
+
+  .modal-actions button {
+    min-height: 52px !important;
+    font-size: 14px !important;
+  }
+
+  /* TRAINERS */
+
+  .admin-trainer-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+  }
+
+  .admin-trainer-card {
+    padding: 15px !important;
+  }
+
+  .trainer-card-stats-four {
+    grid-template-columns:
+      repeat(2,minmax(0,1fr)) !important;
+  }
+
+  /* SETTLEMENTS */
+
+  .settlement-row,
+  .salary-settlement-row {
+    padding: 15px !important;
+    border: 1px solid #202020;
+    border-radius: 6px;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 9px;
+  }
+
+  /* ACTIVITY */
+
+  .activity-detailed-row {
+    padding: 14px 0 !important;
+  }
+
+  .activity-detailed-row time {
+    display: none !important;
+  }
+
+  .change-item {
+    grid-template-columns: 1fr !important;
+    gap: 5px !important;
+  }
+
+  .change-arrow {
+    display: none !important;
+  }
+
+  /* MOBILE BOTTOM NAV */
+
+  .mobile-bottom-nav {
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height:
+      calc(66px + env(safe-area-inset-bottom));
+    padding:
+      7px 7px
+      calc(7px + env(safe-area-inset-bottom));
+    border-top: 1px solid #222222;
+    background:
+      rgba(6,6,6,.97);
+    backdrop-filter: blur(18px);
+    display: grid !important;
+    grid-template-columns:
+      repeat(5,1fr);
+    gap: 4px;
+  }
+
+  .mobile-bottom-item {
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: #777777;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .mobile-bottom-item.active {
+    background: #151515;
+    color: #ffffff;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .login-page {
+    min-height: 100dvh !important;
+    padding:
+      calc(30px + env(safe-area-inset-top))
+      16px
+      calc(24px + env(safe-area-inset-bottom))
+      !important;
+  }
+
+  .login-shell {
+    max-width: 100% !important;
+  }
+
+  .login-card {
+    padding: 22px 18px !important;
+    border-radius: 7px !important;
+    background: #0b0b0b !important;
+    border: 1px solid #252525 !important;
+  }
+
+  .login-card h1 {
+    font-size: 28px !important;
+  }
+
+  .role-switch {
+    height: 54px;
+    border-radius: 6px !important;
+  }
+
+  .role-button {
+    border-radius: 5px !important;
+    font-size: 14px;
+  }
+
+  .input-wrap {
+    height: 58px !important;
+    border-radius: 6px !important;
+  }
+
+  .input-wrap input {
+    font-size: 16px !important;
+  }
+
+  .sign-in-button {
+    min-height: 55px;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+    color: #070707 !important;
+    font-size: 15px;
+  }
+}
+
+/* =========================================================
+   FINAL MONOCHROME CLEANUP
+========================================================= */
+
+/* Remove remaining orange accents */
+.trainer-total-highlight,
+.total-earning strong,
+.activity-dot.insert,
+.activity-dot.update,
+.activity-dot.delete {
+  color: #ffffff !important;
+  background: #8a8a8a !important;
+}
+
+.activity-dot {
+  width: 6px !important;
+  height: 6px !important;
+  background: #7f7f7f !important;
+}
+
+/* Trainer cards */
+.admin-trainer-card {
+  padding: 14px !important;
+}
+
+.admin-trainer-card > strong {
+  margin-top: 10px !important;
+}
+
+.trainer-card-stats {
+  margin-top: 12px !important;
+  padding-top: 10px !important;
+}
+
+.trainer-card-stats-four {
+  gap: 8px !important;
+}
+
+.trainer-card-stats-four > div {
+  min-height: 62px;
+}
+
+/* Settlement card */
+.settlement-row,
+.salary-settlement-row {
+  background: #0b0b0b !important;
+  border: 1px solid #232323 !important;
+  border-radius: 6px !important;
+}
+
+.settlement-status.pending,
+.settlement-status.paid {
+  background: #111111 !important;
+  color: #ededed !important;
+  border-color: #2a2a2a !important;
+}
+
+/* Activity */
+.activity-title,
+.activity-main {
+  color: #bcbcbc !important;
+}
+
+.activity-title strong,
+.activity-title b,
+.activity-main strong {
+  color: #ffffff !important;
+}
+
+.activity-detailed-row,
+.activity-row {
+  border-bottom-color: #1d1d1d !important;
+}
+
+/* Search */
+.search-box {
+  background: #0d0d0d !important;
+  border: 1px solid #252525 !important;
+}
+
+.search-box input {
+  min-height: 46px !important;
+}
+
+/* Mobile tightening */
+@media (max-width: 760px) {
+
+  .header-actions > .primary-button {
+    min-height: 50px !important;
+  }
+
+  .content-card {
+    padding: 14px !important;
+  }
+
+  .admin-trainer-card {
+    padding: 14px !important;
+  }
+
+  .trainer-card-stats-four > div {
+    min-height: 58px;
+  }
+
+  .settlement-row,
+  .salary-settlement-row {
+    padding: 14px !important;
+  }
+
+  .activity-detailed-row {
+    padding: 12px 0 !important;
+  }
+
+  .mobile-bottom-nav {
+    height: calc(62px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-bottom-item {
+    font-size: 9px !important;
+  }
+}

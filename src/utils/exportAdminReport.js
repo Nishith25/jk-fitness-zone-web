@@ -151,7 +151,6 @@ export function exportAdminReport({
     startY: doc.lastAutoTable.finalY + 14,
     head: [[
       'Customer',
-      'Mobile',
       'Trainer',
       'Gym',
       'Gym Period',
@@ -164,7 +163,6 @@ export function exportAdminReport({
     ]],
     body: activeEntries.map((e) => [
       e.customer_name,
-      e.customer_phone || '-',
       e.staff_profiles?.full_name || '-',
       money(e.gym_amount),
       Number(e.gym_amount || 0) > 0

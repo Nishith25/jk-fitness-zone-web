@@ -104,10 +104,6 @@ export function exportAdminExcel({
         Customer:
           entry.customer_name,
 
-        Mobile:
-          entry.customer_phone ||
-          '',
-
         Trainer:
           entry.staff_profiles
             ?.full_name ||
@@ -308,10 +304,6 @@ export function exportAdminCSV({
         (entry) => ({
           Customer:
             entry.customer_name,
-
-          Mobile:
-            entry.customer_phone ||
-            '',
 
           Trainer:
             entry.staff_profiles

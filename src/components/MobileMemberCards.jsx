@@ -55,9 +55,6 @@ export default function MobileMemberCards({
                   {entry.customer_name}
                 </strong>
 
-                <span>
-                  {entry.customer_phone || 'No mobile number'}
-                </span>
               </div>
 
               <span

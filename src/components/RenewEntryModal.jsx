@@ -188,9 +188,6 @@ export default function RenewEntryModal({
           customer_name:
             entry.customer_name,
 
-          customer_phone:
-            entry.customer_phone,
-
           trainer_id:
             currentRole ===
             'trainer'

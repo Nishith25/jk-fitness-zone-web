@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase'
 
 const emptyForm = {
   customer_name: '',
-  customer_phone: '',
   trainer_id: '',
   joined_on: new Date().toISOString().split('T')[0],
 
@@ -164,9 +163,6 @@ export default function AddEntryModal({
 
       const payload = {
         customer_name: form.customer_name.trim(),
-        customer_phone:
-          form.customer_phone.trim() || null,
-
         trainer_id:
           currentRole === 'trainer'
             ? currentUserId
@@ -269,21 +265,6 @@ export default function AddEntryModal({
                     )
                   }
                   placeholder="e.g. Rahul Reddy"
-                />
-              </label>
-
-              <label>
-                Mobile number
-                <input
-                  value={form.customer_phone}
-                  onChange={(e) =>
-                    update(
-                      'customer_phone',
-                      e.target.value.replace(/\D/g, '')
-                    )
-                  }
-                  maxLength="10"
-                  placeholder="Optional"
                 />
               </label>
 

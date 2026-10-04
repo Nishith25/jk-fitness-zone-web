@@ -17,7 +17,6 @@ export default function EditEntryModal({
     if (entry && open) {
       setForm({
         customer_name: entry.customer_name || '',
-        customer_phone: entry.customer_phone || '',
         trainer_id: entry.trainer_id || '',
         joined_on: entry.joined_on || '',
 
@@ -108,9 +107,6 @@ export default function EditEntryModal({
         .update({
           customer_name:
             form.customer_name.trim(),
-
-          customer_phone:
-            form.customer_phone.trim() || null,
 
           trainer_id:
             form.trainer_id || null,
@@ -222,23 +218,6 @@ export default function EditEntryModal({
                     update(
                       'customer_name',
                       e.target.value
-                    )
-                  }
-                />
-              </label>
-
-              <label>
-                Mobile number
-                <input
-                  inputMode="numeric"
-                  maxLength="10"
-                  value={form.customer_phone}
-                  onChange={(e) =>
-                    update(
-                      'customer_phone',
-                      e.target.value
-                        .replace(/\D/g, '')
-                        .slice(0, 10)
                     )
                   }
                 />

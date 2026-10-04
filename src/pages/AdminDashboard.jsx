@@ -1286,10 +1286,7 @@ function EntriesTable({
                   </strong>
 
                   <span>
-                    {entry.customer_phone ||
-                      formatDate(
-                        entry.joined_on
-                      )}
+                    {formatDate(entry.joined_on)}
                   </span>
 
                   {entry.is_cancelled && (

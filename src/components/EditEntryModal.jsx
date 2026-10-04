@@ -45,6 +45,12 @@ export default function EditEntryModal({
 
   if (!open || !form) return null
 
+  const gymEnabled =
+    Number(form.gym_amount || 0) > 0
+
+  const ptEnabled =
+    Number(form.pt_amount || 0) > 0
+
   function update(name, value) {
     setForm((prev) => ({
       ...prev,
@@ -295,6 +301,7 @@ export default function EditEntryModal({
                 <input
                   type="date"
                   value={form.gym_start}
+                  disabled={!gymEnabled}
                   onChange={(e) =>
                     update(
                       'gym_start',
@@ -309,6 +316,7 @@ export default function EditEntryModal({
                 <input
                   type="date"
                   value={form.gym_end}
+                  disabled={!gymEnabled}
                   onChange={(e) =>
                     update(
                       'gym_end',
@@ -348,6 +356,7 @@ export default function EditEntryModal({
                 <input
                   type="date"
                   value={form.pt_start}
+                  disabled={!ptEnabled}
                   onChange={(e) =>
                     update(
                       'pt_start',
@@ -362,6 +371,7 @@ export default function EditEntryModal({
                 <input
                   type="date"
                   value={form.pt_end}
+                  disabled={!ptEnabled}
                   onChange={(e) =>
                     update(
                       'pt_end',

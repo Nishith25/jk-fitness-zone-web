@@ -61,6 +61,9 @@ export default function AddEntryModal({
   const gymAmount = Number(form.gym_amount || 0)
   const ptAmount = Number(form.pt_amount || 0)
 
+  const gymEnabled = gymAmount > 0
+  const ptEnabled = ptAmount > 0
+
   const preview = useMemo(() => {
     const hasGym = gymAmount > 0
     const hasPT = ptAmount > 0
@@ -344,6 +347,7 @@ export default function AddEntryModal({
                 <input
                   type="date"
                   value={form.gym_start}
+                  disabled={!gymEnabled}
                   onChange={(e) =>
                     update(
                       'gym_start',
@@ -358,6 +362,7 @@ export default function AddEntryModal({
                 <input
                   type="date"
                   value={form.gym_end}
+                  disabled={!gymEnabled}
                   onChange={(e) =>
                     update(
                       'gym_end',
@@ -401,6 +406,7 @@ export default function AddEntryModal({
                 <input
                   type="date"
                   value={form.pt_start}
+                  disabled={!ptEnabled}
                   onChange={(e) =>
                     update(
                       'pt_start',
@@ -415,6 +421,7 @@ export default function AddEntryModal({
                 <input
                   type="date"
                   value={form.pt_end}
+                  disabled={!ptEnabled}
                   onChange={(e) =>
                     update(
                       'pt_end',

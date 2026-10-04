@@ -4193,3 +4193,11 @@ body {
 .activity-dot.logout {
   background: #777 !important;
 }
+
+.entry-form input:disabled,
+.entry-form select:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  background: #0a0a0a !important;
+  color: #666 !important;
+}

@@ -1,0 +1,762 @@
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+
+import {
+  RefreshCcw,
+  X,
+} from 'lucide-react'
+
+import { supabase } from '../lib/supabase'
+
+function nextDay(date) {
+  if (!date) {
+    return new Date()
+      .toISOString()
+      .split('T')[0]
+  }
+
+  const d =
+    new Date(`${date}T00:00:00`)
+
+  d.setDate(d.getDate() + 1)
+
+  return d
+    .toISOString()
+    .split('T')[0]
+}
+
+function addMonth(date) {
+  if (!date) return ''
+
+  const d =
+    new Date(`${date}T00:00:00`)
+
+  d.setMonth(d.getMonth() + 1)
+
+  return d
+    .toISOString()
+    .split('T')[0]
+}
+
+export default function RenewEntryModal({
+  open,
+  entry,
+  currentRole,
+  currentUserId,
+  onClose,
+  onSaved,
+}) {
+  const [form, setForm] =
+    useState(null)
+
+  const [saving, setSaving] =
+    useState(false)
+
+  const [error, setError] =
+    useState('')
+
+  useEffect(() => {
+    if (!open || !entry) return
+
+    const gymStart =
+      nextDay(entry.gym_end)
+
+    const ptStart =
+      nextDay(entry.pt_end)
+
+    setForm({
+      renew_gym:
+        Number(
+          entry.gym_amount || 0
+        ) > 0,
+
+      renew_pt:
+        Number(
+          entry.pt_amount || 0
+        ) > 0,
+
+      gym_amount:
+        Number(
+          entry.gym_amount || 0
+        ),
+
+      gym_start:
+        gymStart,
+
+      gym_end:
+        addMonth(gymStart),
+
+      pt_amount:
+        Number(
+          entry.pt_amount || 0
+        ),
+
+      pt_start:
+        ptStart,
+
+      pt_end:
+        addMonth(ptStart),
+
+      payment_status:
+        'paid',
+
+      payment_mode:
+        entry.payment_mode ||
+        'cash',
+
+      amount_paid: 0,
+
+      notes: '',
+    })
+  }, [open, entry])
+
+  const preview = useMemo(() => {
+    if (!form) return null
+
+    const gym =
+      form.renew_gym
+        ? Number(
+            form.gym_amount || 0
+          )
+        : 0
+
+    const pt =
+      form.renew_pt
+        ? Number(
+            form.pt_amount || 0
+          )
+        : 0
+
+    const overlap =
+      gym > 0 &&
+      pt > 0 &&
+      form.gym_start &&
+      form.gym_end &&
+      form.pt_start &&
+      form.pt_end &&
+      form.gym_start <=
+        form.pt_end &&
+      form.pt_start <=
+        form.gym_end
+
+    if (overlap) {
+      const total = gym + pt
+
+      return {
+        label: 'Gym + PT',
+        rule: '50 / 50',
+        jk: total * 0.5,
+        trainer: total * 0.5,
+      }
+    }
+
+    if (pt > 0) {
+      return {
+        label:
+          gym > 0
+            ? 'Non-overlap'
+            : 'PT only',
+
+        rule:
+          gym > 0
+            ? 'Gym 100% + PT 60/40'
+            : '60 / 40',
+
+        jk:
+          gym +
+          pt * 0.6,
+
+        trainer:
+          pt * 0.4,
+      }
+    }
+
+    return {
+      label: 'Gym only',
+      rule: '100 / 0',
+      jk: gym,
+      trainer: 0,
+    }
+  }, [form])
+
+  if (
+    !open ||
+    !entry ||
+    !form
+  ) {
+    return null
+  }
+
+  function update(
+    key,
+    value
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value,
+    }))
+  }
+
+  async function submit(e) {
+    e.preventDefault()
+
+    setSaving(true)
+    setError('')
+
+    try {
+      const gym =
+        form.renew_gym
+          ? Number(
+              form.gym_amount || 0
+            )
+          : 0
+
+      const pt =
+        form.renew_pt
+          ? Number(
+              form.pt_amount || 0
+            )
+          : 0
+
+      if (
+        gym <= 0 &&
+        pt <= 0
+      ) {
+        throw new Error(
+          'Select Gym or PT to renew.'
+        )
+      }
+
+      if (
+        form.renew_gym &&
+        (!form.gym_start ||
+          !form.gym_end)
+      ) {
+        throw new Error(
+          'Enter Gym renewal dates.'
+        )
+      }
+
+      if (
+        form.renew_pt &&
+        (!form.pt_start ||
+          !form.pt_end)
+      ) {
+        throw new Error(
+          'Enter PT renewal dates.'
+        )
+      }
+
+      const { error:
+        insertError } =
+        await supabase
+          .from('member_entries')
+          .insert({
+            renewal_of:
+              entry.id,
+
+            customer_name:
+              entry.customer_name,
+
+            customer_phone:
+              entry.customer_phone,
+
+            trainer_id:
+              currentRole ===
+              'trainer'
+                ? currentUserId
+                : entry.trainer_id,
+
+            joined_on:
+              new Date()
+                .toISOString()
+                .split('T')[0],
+
+            gym_amount: gym,
+
+            gym_start:
+              form.renew_gym
+                ? form.gym_start
+                : null,
+
+            gym_end:
+              form.renew_gym
+                ? form.gym_end
+                : null,
+
+            pt_amount: pt,
+
+            pt_start:
+              form.renew_pt
+                ? form.pt_start
+                : null,
+
+            pt_end:
+              form.renew_pt
+                ? form.pt_end
+                : null,
+
+            payment_status:
+              form.payment_status,
+
+            payment_mode:
+              form.payment_mode,
+
+            amount_paid:
+              Number(
+                form.amount_paid ||
+                  0
+              ),
+
+            notes:
+              form.notes ||
+              `Renewal of previous membership`,
+          })
+
+      if (insertError) {
+        throw insertError
+      }
+
+      onSaved?.()
+      onClose()
+    } catch (err) {
+      setError(
+        err.message ||
+          'Unable to renew membership.'
+      )
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="modal-backdrop">
+
+      <div className="entry-modal">
+
+        <div className="modal-header">
+
+          <div>
+            <span className="section-kicker">
+              MEMBERSHIP RENEWAL
+            </span>
+
+            <h2>
+              {entry.customer_name}
+            </h2>
+          </div>
+
+          <button
+            className="icon-button"
+            onClick={onClose}
+          >
+            <X size={20} />
+          </button>
+
+        </div>
+
+        <form
+          className="entry-form"
+          onSubmit={submit}
+        >
+
+          <div className="renew-choice-grid">
+
+            <label
+              className={
+                form.renew_gym
+                  ? 'renew-choice active'
+                  : 'renew-choice'
+              }
+            >
+              <input
+                type="checkbox"
+                checked={
+                  form.renew_gym
+                }
+                onChange={(e) =>
+                  update(
+                    'renew_gym',
+                    e.target.checked
+                  )
+                }
+              />
+
+              <strong>
+                Renew Gym
+              </strong>
+
+              <span>
+                Previous ₹
+                {Number(
+                  entry.gym_amount ||
+                    0
+                ).toLocaleString(
+                  'en-IN'
+                )}
+              </span>
+            </label>
+
+            <label
+              className={
+                form.renew_pt
+                  ? 'renew-choice active'
+                  : 'renew-choice'
+              }
+            >
+              <input
+                type="checkbox"
+                checked={
+                  form.renew_pt
+                }
+                onChange={(e) =>
+                  update(
+                    'renew_pt',
+                    e.target.checked
+                  )
+                }
+              />
+
+              <strong>
+                Renew PT
+              </strong>
+
+              <span>
+                Previous ₹
+                {Number(
+                  entry.pt_amount ||
+                    0
+                ).toLocaleString(
+                  'en-IN'
+                )}
+              </span>
+            </label>
+
+          </div>
+
+          {form.renew_gym && (
+            <div className="form-section">
+
+              <h3>
+                Gym Renewal
+              </h3>
+
+              <div className="form-grid">
+
+                <label>
+                  Amount
+                  <input
+                    type="number"
+                    min="0"
+                    value={
+                      form.gym_amount
+                    }
+                    onChange={(e) =>
+                      update(
+                        'gym_amount',
+                        e.target.value
+                      )
+                    }
+                  />
+                </label>
+
+                <label>
+                  Start
+                  <input
+                    type="date"
+                    value={
+                      form.gym_start
+                    }
+                    onChange={(e) => {
+                      const value =
+                        e.target.value
+
+                      update(
+                        'gym_start',
+                        value
+                      )
+
+                      update(
+                        'gym_end',
+                        addMonth(
+                          value
+                        )
+                      )
+                    }}
+                  />
+                </label>
+
+                <label>
+                  Expiry
+                  <input
+                    type="date"
+                    value={
+                      form.gym_end
+                    }
+                    onChange={(e) =>
+                      update(
+                        'gym_end',
+                        e.target.value
+                      )
+                    }
+                  />
+                </label>
+
+              </div>
+
+            </div>
+          )}
+
+          {form.renew_pt && (
+            <div className="form-section">
+
+              <h3>
+                Personal Training Renewal
+              </h3>
+
+              <div className="form-grid">
+
+                <label>
+                  PT Amount
+                  <input
+                    type="number"
+                    min="0"
+                    value={
+                      form.pt_amount
+                    }
+                    onChange={(e) =>
+                      update(
+                        'pt_amount',
+                        e.target.value
+                      )
+                    }
+                  />
+                </label>
+
+                <label>
+                  Start
+                  <input
+                    type="date"
+                    value={
+                      form.pt_start
+                    }
+                    onChange={(e) => {
+                      const value =
+                        e.target.value
+
+                      update(
+                        'pt_start',
+                        value
+                      )
+
+                      update(
+                        'pt_end',
+                        addMonth(
+                          value
+                        )
+                      )
+                    }}
+                  />
+                </label>
+
+                <label>
+                  Expiry
+                  <input
+                    type="date"
+                    value={
+                      form.pt_end
+                    }
+                    onChange={(e) =>
+                      update(
+                        'pt_end',
+                        e.target.value
+                      )
+                    }
+                  />
+                </label>
+
+              </div>
+
+            </div>
+          )}
+
+          {preview && (
+            <div className="split-preview">
+
+              <div>
+                <span>
+                  NEW SPLIT
+                </span>
+
+                <strong>
+                  {preview.label}
+                </strong>
+
+                <small>
+                  {preview.rule}
+                </small>
+              </div>
+
+              <div className="split-money">
+
+                <div>
+                  <span>
+                    JK Fitness Zone
+                  </span>
+
+                  <strong>
+                    ₹
+                    {preview.jk.toLocaleString(
+                      'en-IN'
+                    )}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Trainer
+                  </span>
+
+                  <strong>
+                    ₹
+                    {preview.trainer.toLocaleString(
+                      'en-IN'
+                    )}
+                  </strong>
+                </div>
+
+              </div>
+
+            </div>
+          )}
+
+          <div className="form-section">
+
+            <h3>Payment</h3>
+
+            <div className="form-grid">
+
+              <label>
+                Status
+                <select
+                  value={
+                    form.payment_status
+                  }
+                  onChange={(e) =>
+                    update(
+                      'payment_status',
+                      e.target.value
+                    )
+                  }
+                >
+                  <option value="paid">
+                    Paid
+                  </option>
+
+                  <option value="partial">
+                    Partial
+                  </option>
+
+                  <option value="pending">
+                    Pending
+                  </option>
+                </select>
+              </label>
+
+              <label>
+                Mode
+                <select
+                  value={
+                    form.payment_mode
+                  }
+                  onChange={(e) =>
+                    update(
+                      'payment_mode',
+                      e.target.value
+                    )
+                  }
+                >
+                  <option value="cash">
+                    Cash
+                  </option>
+
+                  <option value="upi">
+                    UPI
+                  </option>
+
+                  <option value="card">
+                    Card
+                  </option>
+
+                  <option value="bank">
+                    Bank
+                  </option>
+
+                  <option value="other">
+                    Other
+                  </option>
+                </select>
+              </label>
+
+              <label>
+                Amount paid
+                <input
+                  type="number"
+                  min="0"
+                  value={
+                    form.amount_paid
+                  }
+                  onChange={(e) =>
+                    update(
+                      'amount_paid',
+                      e.target.value
+                    )
+                  }
+                />
+              </label>
+
+            </div>
+
+          </div>
+
+          {error && (
+            <div className="form-error">
+              {error}
+            </div>
+          )}
+
+          <div className="modal-actions">
+
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+
+            <button
+              className="primary-button"
+              disabled={saving}
+            >
+              <RefreshCcw
+                size={16}
+              />
+
+              {saving
+                ? 'Renewing...'
+                : 'Confirm Renewal'}
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  )
+}

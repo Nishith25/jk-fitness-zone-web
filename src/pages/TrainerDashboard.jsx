@@ -26,6 +26,15 @@ function money(value) {
   return `₹${Number(value || 0).toLocaleString('en-IN')}`
 }
 
+function shortDate(value) {
+  if (!value) return '—'
+
+  return new Date(`${value}T00:00:00`).toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+  })
+}
+
 export default function TrainerDashboard() {
   const navigate = useNavigate()
 
@@ -417,7 +426,7 @@ export default function TrainerDashboard() {
 
                       {Number(entry.gym_amount || 0) > 0 && (
                         <small>
-                          {entry.gym_start || '—'} → {entry.gym_end || '—'}
+                          {shortDate(entry.gym_start)} – {shortDate(entry.gym_end)}
                         </small>
                       )}
                     </div>
@@ -430,7 +439,7 @@ export default function TrainerDashboard() {
 
                       {Number(entry.pt_amount || 0) > 0 && (
                         <small>
-                          {entry.pt_start || '—'} → {entry.pt_end || '—'}
+                          {shortDate(entry.pt_start)} – {shortDate(entry.pt_end)}
                         </small>
                       )}
                     </div>

@@ -4559,3 +4559,179 @@ body {
     padding-bottom: 90px !important;
   }
 }
+
+/* =========================================================
+   COMPACT TRAINER CUSTOMER CARDS - MOBILE
+========================================================= */
+
+@media (max-width: 760px) {
+
+  .trainer-customers-section {
+    padding: 14px !important;
+  }
+
+  .trainer-customers-section .section-subtext {
+    display: none;
+  }
+
+  .trainer-customers-section .card-heading {
+    margin-bottom: 12px !important;
+    align-items: center !important;
+  }
+
+  .customer-count-box {
+    min-width: 55px !important;
+    padding: 7px 9px !important;
+  }
+
+  .customer-count-box span {
+    font-size: 7px !important;
+  }
+
+  .customer-count-box strong {
+    margin-top: 2px !important;
+    font-size: 16px !important;
+  }
+
+  .trainer-customer-grid {
+    margin-top: 0 !important;
+    gap: 9px !important;
+  }
+
+  .trainer-customer-card {
+    padding: 14px !important;
+    border-radius: 6px !important;
+  }
+
+  /* CUSTOMER NAME */
+
+  .trainer-customer-head {
+    padding-bottom: 11px !important;
+  }
+
+  .trainer-customer-label {
+    display: none;
+  }
+
+  .trainer-customer-head strong {
+    margin-top: 0 !important;
+    font-size: 17px !important;
+  }
+
+  .trainer-customer-payment {
+    padding: 4px 7px !important;
+    font-size: 8px !important;
+  }
+
+  /* GYM / PT / SHARE IN ONE ROW */
+
+  .trainer-customer-metrics {
+    margin-top: 11px !important;
+    display: grid !important;
+    grid-template-columns:
+      repeat(3, minmax(0,1fr)) !important;
+    gap: 0 !important;
+    border-top: 0;
+    border-bottom: 1px solid #1d1d1d;
+  }
+
+  .trainer-customer-metrics > div {
+    min-height: 72px !important;
+    padding: 10px 8px !important;
+    border: 0 !important;
+    border-right: 1px solid #1d1d1d !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .trainer-customer-metrics > div:first-child {
+    padding-left: 0 !important;
+  }
+
+  .trainer-customer-metrics > div:last-child {
+    padding-right: 0 !important;
+    border-right: 0 !important;
+  }
+
+  .trainer-share-box {
+    grid-column: auto !important;
+    border: 0 !important;
+  }
+
+  .trainer-customer-metrics span {
+    font-size: 8px !important;
+  }
+
+  .trainer-customer-metrics strong,
+  .trainer-share-box strong {
+    margin-top: 6px !important;
+    font-size: 16px !important;
+    white-space: nowrap;
+  }
+
+  .trainer-customer-metrics small {
+    margin-top: 4px !important;
+    font-size: 8px !important;
+    line-height: 1.25 !important;
+    white-space: nowrap;
+  }
+
+  /* PAYMENT DETAILS IN SINGLE ROW */
+
+  .trainer-customer-footer {
+    margin-top: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1.4fr 1fr !important;
+    gap: 0 !important;
+  }
+
+  .trainer-customer-footer > div {
+    min-height: 48px !important;
+    padding: 9px 8px !important;
+    border: 0 !important;
+    border-right: 1px solid #1d1d1d !important;
+    border-radius: 0 !important;
+  }
+
+  .trainer-customer-footer > div:first-child {
+    padding-left: 0 !important;
+  }
+
+  .trainer-customer-footer > div:last-child {
+    padding-right: 0 !important;
+    border-right: 0 !important;
+  }
+
+  .trainer-customer-footer span {
+    font-size: 8px !important;
+  }
+
+  .trainer-customer-footer strong {
+    font-size: 12px !important;
+    text-transform: uppercase;
+  }
+
+  /* REDUCE EMPTY SPACE THROUGHOUT TRAINER HOME */
+
+  .trainer-payment-card {
+    padding: 14px !important;
+  }
+
+  .trainer-main .content-card {
+    margin-top: 10px !important;
+  }
+
+  .trainer-stats {
+    gap: 8px !important;
+  }
+
+  .trainer-stats .stat-card {
+    min-height: 88px !important;
+    padding: 13px !important;
+  }
+
+  .trainer-stats .stat-value {
+    margin-top: 8px !important;
+    font-size: 20px !important;
+  }
+}

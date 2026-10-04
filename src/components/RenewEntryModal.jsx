@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import {
+  MEMBERSHIP_DURATIONS,
+  calculateExpiryDate,
+  detectDuration,
+} from '../utils/membershipDuration'
 
 function nextDay(date) {
   if (!date) {
@@ -92,8 +97,20 @@ export default function RenewEntryModal({
       gym_start:
         gymStart,
 
+      gym_duration:
+        detectDuration(
+          entry.gym_start,
+          entry.gym_end
+        ),
+
       gym_end:
-        addMonth(gymStart),
+        calculateExpiryDate(
+          gymStart,
+          detectDuration(
+            entry.gym_start,
+            entry.gym_end
+          )
+        ),
 
       pt_amount:
         Number(
@@ -103,8 +120,20 @@ export default function RenewEntryModal({
       pt_start:
         ptStart,
 
+      pt_duration:
+        detectDuration(
+          entry.pt_start,
+          entry.pt_end
+        ),
+
       pt_end:
-        addMonth(ptStart),
+        calculateExpiryDate(
+          ptStart,
+          detectDuration(
+            entry.pt_start,
+            entry.pt_end
+          )
+        ),
 
       payment_status:
         'paid',
@@ -451,10 +480,37 @@ export default function RenewEntryModal({
                 </label>
 
                 <label>
+                  Duration
+                  <select
+                    value={form.gym_duration}
+                    disabled={form.gym_same_as_pt}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        gym_duration: e.target.value,
+                        gym_end: calculateExpiryDate(
+                          prev.gym_start,
+                          e.target.value
+                        ),
+                      }))
+                    }
+                  >
+                    {MEMBERSHIP_DURATIONS.map((item) => (
+                      <option
+                        value={item.value}
+                        key={item.value}
+                      >
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
                   Expiry date
                   <input
                     type="date"
-                    disabled={form.gym_same_as_pt}
+                    disabled
                     value={
                       form.gym_end
                     }
@@ -525,9 +581,36 @@ export default function RenewEntryModal({
                 </label>
 
                 <label>
+                  Duration
+                  <select
+                    value={form.pt_duration}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        pt_duration: e.target.value,
+                        pt_end: calculateExpiryDate(
+                          prev.pt_start,
+                          e.target.value
+                        ),
+                      }))
+                    }
+                  >
+                    {MEMBERSHIP_DURATIONS.map((item) => (
+                      <option
+                        value={item.value}
+                        key={item.value}
+                      >
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
                   Expiry date
                   <input
                     type="date"
+                    disabled
                     value={
                       form.pt_end
                     }

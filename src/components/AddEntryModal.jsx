@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import {
+  MEMBERSHIP_DURATIONS,
+  calculateExpiryDate,
+} from '../utils/membershipDuration'
 
 const emptyForm = {
   customer_name: '',
@@ -375,12 +379,43 @@ export default function AddEntryModal({
                   value={form.gym_start}
                   disabled={!gymEnabled || form.gym_same_as_pt}
                   onChange={(e) =>
-                    update(
-                      'gym_start',
-                      e.target.value
-                    )
+                    setForm((prev) => ({
+                      ...prev,
+                      gym_start: e.target.value,
+                      gym_end: calculateExpiryDate(
+                        e.target.value,
+                        prev.gym_duration
+                      ),
+                    }))
                   }
                 />
+              </label>
+
+              <label>
+                Duration
+                <select
+                  value={form.gym_duration}
+                  disabled={!gymEnabled || form.gym_same_as_pt}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      gym_duration: e.target.value,
+                      gym_end: calculateExpiryDate(
+                        prev.gym_start,
+                        e.target.value
+                      ),
+                    }))
+                  }
+                >
+                  {MEMBERSHIP_DURATIONS.map((item) => (
+                    <option
+                      value={item.value}
+                      key={item.value}
+                    >
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label>
@@ -388,13 +423,7 @@ export default function AddEntryModal({
                 <input
                   type="date"
                   value={form.gym_end}
-                  disabled={!gymEnabled || form.gym_same_as_pt}
-                  onChange={(e) =>
-                    update(
-                      'gym_end',
-                      e.target.value
-                    )
-                  }
+                  disabled
                 />
               </label>
 
@@ -434,12 +463,43 @@ export default function AddEntryModal({
                   value={form.pt_start}
                   disabled={!ptEnabled}
                   onChange={(e) =>
-                    update(
-                      'pt_start',
-                      e.target.value
-                    )
+                    setForm((prev) => ({
+                      ...prev,
+                      pt_start: e.target.value,
+                      pt_end: calculateExpiryDate(
+                        e.target.value,
+                        prev.pt_duration
+                      ),
+                    }))
                   }
                 />
+              </label>
+
+              <label>
+                Duration
+                <select
+                  value={form.pt_duration}
+                  disabled={!ptEnabled}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      pt_duration: e.target.value,
+                      pt_end: calculateExpiryDate(
+                        prev.pt_start,
+                        e.target.value
+                      ),
+                    }))
+                  }
+                >
+                  {MEMBERSHIP_DURATIONS.map((item) => (
+                    <option
+                      value={item.value}
+                      key={item.value}
+                    >
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label>
@@ -447,13 +507,7 @@ export default function AddEntryModal({
                 <input
                   type="date"
                   value={form.pt_end}
-                  disabled={!ptEnabled}
-                  onChange={(e) =>
-                    update(
-                      'pt_end',
-                      e.target.value
-                    )
-                  }
+                  disabled
                 />
               </label>
 

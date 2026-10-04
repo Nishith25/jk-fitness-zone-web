@@ -484,18 +484,26 @@ export default function AdminDashboard() {
 
     if (!confirmed) return
 
-    const { error } = await supabase
-      .from('member_entries')
-      .update({
-        is_cancelled: false,
-        cancellation_reason: null,
-        cancelled_at: null,
-        cancelled_by: null,
-      })
-      .eq('id', entry.id)
+    const { data, error } =
+      await supabase.rpc(
+        'restore_member_entry',
+        {
+          entry_id: entry.id,
+        }
+      )
 
     if (error) {
-      alert(error.message)
+      alert(
+        error.message ||
+        'Unable to restore entry.'
+      )
+      return
+    }
+
+    if (!data) {
+      alert(
+        'Entry was not restored.'
+      )
       return
     }
 

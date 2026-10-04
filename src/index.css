@@ -5979,3 +5979,105 @@ textarea:focus {
     font-size: 10px;
   }
 }
+
+/* =========================================================
+   TRAINER CUSTOMER FILTERS
+========================================================= */
+
+.trainer-entry-filters {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1.5fr)
+    repeat(3, minmax(130px, .65fr))
+    auto;
+
+  gap: 8px;
+  margin: 14px 0 18px;
+  align-items: center;
+}
+
+.trainer-filter-search {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 12px;
+
+  border: 1px solid var(--jk-line);
+  border-radius: 5px;
+
+  background: var(--jk-panel);
+}
+
+.trainer-filter-search svg {
+  color: var(--jk-muted);
+  flex-shrink: 0;
+}
+
+.trainer-filter-search input {
+  width: 100%;
+  min-height: 40px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+}
+
+.trainer-entry-filters select {
+  min-height: 42px;
+  padding: 0 10px;
+
+  border: 1px solid var(--jk-line);
+  border-radius: 5px;
+
+  background: var(--jk-panel);
+  color: var(--jk-white);
+
+  font-size: 11px;
+}
+
+.trainer-filter-clear {
+  min-height: 42px;
+  padding: 0 13px;
+
+  border: 1px solid var(--jk-line);
+  border-radius: 5px;
+
+  background: transparent;
+  color: var(--jk-muted);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.trainer-filter-clear:hover {
+  color: var(--jk-white);
+  border-color: var(--jk-blue);
+}
+
+@media (max-width: 760px) {
+
+  .trainer-entry-filters {
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+
+    margin: 12px 0 14px;
+  }
+
+  .trainer-filter-search {
+    grid-column: 1 / -1;
+  }
+
+  .trainer-entry-filters select {
+    width: 100%;
+    min-height: 42px;
+    font-size: 10px;
+  }
+
+  .trainer-filter-clear {
+    width: 100%;
+  }
+}

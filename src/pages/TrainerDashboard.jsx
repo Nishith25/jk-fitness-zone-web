@@ -6,6 +6,7 @@ import {
   Dumbbell,
   LogOut,
   Plus,
+  Search,
   Users,
 } from 'lucide-react'
 
@@ -53,6 +54,11 @@ export default function TrainerDashboard() {
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
   const [trainerTab, setTrainerTab] = useState('home')
+
+  const [customerSearch, setCustomerSearch] = useState('')
+  const [gymFilter, setGymFilter] = useState('all')
+  const [paymentFilter, setPaymentFilter] = useState('all')
+  const [ptFilter, setPtFilter] = useState('all')
 
   const loadData = useCallback(async () => {
     const {
@@ -149,6 +155,48 @@ export default function TrainerDashboard() {
         entry.joined_on?.slice(0, 7) === month
     )
   }, [entries, month])
+
+  const filteredMonthEntries = useMemo(() => {
+    const query =
+      customerSearch.trim().toLowerCase()
+
+    return monthEntries.filter((entry) => {
+      const matchesName =
+        !query ||
+        entry.customer_name
+          ?.toLowerCase()
+          .includes(query)
+
+      const matchesGym =
+        gymFilter === 'all' ||
+        (gymFilter === 'paid' &&
+          Boolean(entry.gym_fee_paid)) ||
+        (gymFilter === 'not_paid' &&
+          !entry.gym_fee_paid)
+
+      const matchesPayment =
+        paymentFilter === 'all' ||
+        entry.payment_status === paymentFilter
+
+      const matchesPt =
+        ptFilter === 'all' ||
+        Number(entry.pt_amount || 0) ===
+          Number(ptFilter)
+
+      return (
+        matchesName &&
+        matchesGym &&
+        matchesPayment &&
+        matchesPt
+      )
+    })
+  }, [
+    monthEntries,
+    customerSearch,
+    gymFilter,
+    paymentFilter,
+    ptFilter,
+  ])
 
   const stats = useMemo(() => {
     return {
@@ -274,7 +322,7 @@ export default function TrainerDashboard() {
           />
 
           <StatCard
-            label="Business Value"
+            label="PT Business"
             value={money(stats.total)}
             icon={Banknote}
           />
@@ -376,23 +424,124 @@ export default function TrainerDashboard() {
 
             <div className="customer-count-box">
               <span>Customers</span>
-              <strong>{monthEntries.length}</strong>
+              <strong>
+                {filteredMonthEntries.length}
+                {filteredMonthEntries.length !== monthEntries.length
+                  ? ` / ${monthEntries.length}`
+                  : ''}
+              </strong>
             </div>
 
           </div>
 
-          {!monthEntries.length ? (
+          <div className="trainer-entry-filters">
+
+            <div className="trainer-filter-search">
+              <Search size={16} />
+
+              <input
+                value={customerSearch}
+                onChange={(e) =>
+                  setCustomerSearch(e.target.value)
+                }
+                placeholder="Search customer..."
+              />
+            </div>
+
+            <select
+              value={gymFilter}
+              onChange={(e) =>
+                setGymFilter(e.target.value)
+              }
+            >
+              <option value="all">
+                All Gym
+              </option>
+
+              <option value="paid">
+                Gym Paid
+              </option>
+
+              <option value="not_paid">
+                Gym Not Paid
+              </option>
+            </select>
+
+            <select
+              value={paymentFilter}
+              onChange={(e) =>
+                setPaymentFilter(e.target.value)
+              }
+            >
+              <option value="all">
+                All Payments
+              </option>
+
+              <option value="paid">
+                Paid
+              </option>
+
+              <option value="partial">
+                Partial
+              </option>
+
+              <option value="pending">
+                Pending
+              </option>
+            </select>
+
+            <select
+              value={ptFilter}
+              onChange={(e) =>
+                setPtFilter(e.target.value)
+              }
+            >
+              <option value="all">
+                All PT Amounts
+              </option>
+
+              <option value="5000">₹5,000</option>
+              <option value="6000">₹6,000</option>
+              <option value="7000">₹7,000</option>
+              <option value="8000">₹8,000</option>
+              <option value="12000">₹12,000</option>
+              <option value="14000">₹14,000</option>
+              <option value="16000">₹16,000</option>
+              <option value="21000">₹21,000</option>
+            </select>
+
+            {(customerSearch ||
+              gymFilter !== 'all' ||
+              paymentFilter !== 'all' ||
+              ptFilter !== 'all') && (
+              <button
+                type="button"
+                className="trainer-filter-clear"
+                onClick={() => {
+                  setCustomerSearch('')
+                  setGymFilter('all')
+                  setPaymentFilter('all')
+                  setPtFilter('all')
+                }}
+              >
+                Clear
+              </button>
+            )}
+
+          </div>
+
+          {!filteredMonthEntries.length ? (
             <div className="empty-state">
               <strong>No customer entries</strong>
 
               <span>
-                No customers found for this month.
+                No customers match the selected filters.
               </span>
             </div>
           ) : (
             <div className="trainer-customer-grid">
 
-              {monthEntries.map((entry) => (
+              {filteredMonthEntries.map((entry) => (
                 <article
                   className="trainer-customer-card"
                   key={entry.id}
@@ -424,11 +573,13 @@ export default function TrainerDashboard() {
                         {entry.gym_fee_paid ? 'Paid' : 'Not Paid'}
                       </strong>
 
-                      {Number(entry.gym_amount || 0) > 0 && (
-                        <small>
-                          {shortDate(entry.gym_start)} – {shortDate(entry.gym_end)}
-                        </small>
-                      )}
+                      {entry.gym_fee_paid &&
+                        entry.gym_start &&
+                        entry.gym_end && (
+                          <small>
+                            {shortDate(entry.gym_start)} – {shortDate(entry.gym_end)}
+                          </small>
+                        )}
                     </div>
 
                     <div>

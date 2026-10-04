@@ -1367,24 +1367,24 @@ function EntriesTable({
 
               <td>
                 <strong>
-                  {money(
-                    entry.gym_amount
-                  )}
+                  {entry.gym_fee_paid
+                    ? 'Paid'
+                    : 'Not Paid'}
                 </strong>
 
-                {Number(
-                  entry.gym_amount
-                ) > 0 && (
-                  <small className="date-small">
-                    {formatDate(
-                      entry.gym_start
-                    )}
-                    {' → '}
-                    {formatDate(
-                      entry.gym_end
-                    )}
-                  </small>
-                )}
+                {entry.gym_fee_paid &&
+                  entry.gym_start &&
+                  entry.gym_end && (
+                    <small className="date-small">
+                      {formatDate(
+                        entry.gym_start
+                      )}
+                      {' → '}
+                      {formatDate(
+                        entry.gym_end
+                      )}
+                    </small>
+                  )}
               </td>
 
               <td>
@@ -1412,16 +1412,11 @@ function EntriesTable({
               <td>
                 <span className="split-pill">
 
-                  {entry.split_rule ===
-                  'gym_plus_pt_50_50'
-                    ? '50 / 50'
-                    : entry.split_rule ===
-                        'pt_only_60_40'
-                      ? '60 / 40'
-                      : entry.split_rule ===
-                          'gym_only_100_0'
-                        ? '100 / 0'
-                        : 'Mixed'}
+                  {Number(entry.pt_amount || 0) > 0
+                    ? entry.gym_fee_paid
+                      ? '50 / 50'
+                      : '60 / 40'
+                    : '—'}
 
                 </span>
               </td>

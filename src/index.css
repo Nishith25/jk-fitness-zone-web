@@ -5235,3 +5235,119 @@ textarea:focus {
     font-size: 16px !important;
   }
 }
+
+/* =========================================================
+   COMPACT PREMIUM CHECKBOXES
+========================================================= */
+
+.compact-check-row {
+  margin: 4px 0 15px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.premium-check {
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid #293138;
+  border-radius: 5px;
+  background: #0d1114;
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+  cursor: pointer;
+  user-select: none;
+}
+
+.premium-check:hover {
+  border-color: rgba(22,139,196,.45);
+  background: #10161a;
+}
+
+.premium-check input {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 15px !important;
+  height: 15px !important;
+  min-height: 15px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 1px solid #59636a !important;
+  border-radius: 3px !important;
+
+  background: #080b0d !important;
+  cursor: pointer;
+  position: relative;
+}
+
+.premium-check input:checked {
+  background: var(--jk-blue, #168bc4) !important;
+  border-color: var(--jk-blue, #168bc4) !important;
+}
+
+.premium-check input:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+
+  width: 4px;
+  height: 8px;
+
+  border: solid white;
+  border-width: 0 2px 2px 0;
+
+  transform: rotate(45deg);
+}
+
+.premium-check span {
+  color: #e7eaec;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.premium-check.disabled {
+  opacity: .38;
+  cursor: not-allowed;
+}
+
+.premium-check.disabled input,
+.premium-check.disabled span {
+  cursor: not-allowed;
+}
+
+.form-section-title {
+  margin-bottom: 10px;
+}
+
+.form-section-title h3 {
+  margin: 0 !important;
+}
+
+@media (max-width: 760px) {
+  .compact-check-row {
+    gap: 7px;
+  }
+
+  .premium-check {
+    min-height: 34px;
+    padding: 6px 9px;
+  }
+
+  .premium-check span {
+    font-size: 9px;
+  }
+
+  .premium-check input {
+    width: 14px !important;
+    height: 14px !important;
+    min-height: 14px !important;
+  }
+}

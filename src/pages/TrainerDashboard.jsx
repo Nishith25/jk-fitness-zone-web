@@ -603,7 +603,11 @@ export default function TrainerDashboard() {
                     <div className="trainer-share-box">
                       <span>My Share</span>
                       <strong>
-                        {money(entry.monthly_trainer_share)}
+                        {money(
+                          entry.final_trainer_share ??
+                            entry.monthly_trainer_share ??
+                            0
+                        )}
                       </strong>
                     </div>
 

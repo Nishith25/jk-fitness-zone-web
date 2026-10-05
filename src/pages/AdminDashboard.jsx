@@ -471,6 +471,23 @@ export default function AdminDashboard() {
     reload: reloadMonthlyFinancials,
   } = useMonthlyFinancials(month)
 
+  const monthlyTrainerShareByEntry =
+    useMemo(
+      () =>
+        Object.fromEntries(
+          monthlyFinancialRows.map(
+            (row) => [
+              row.entry_id,
+              Number(
+                row.final_trainer_share || 0
+              ),
+            ]
+          )
+        ),
+      [monthlyFinancialRows]
+    )
+
+
   async function logout() {
     try {
       await supabase.rpc('log_staff_event', {
@@ -901,9 +918,7 @@ export default function AdminDashboard() {
 
               <StatCard
                 label="Trainer Share"
-                value={money(
-                  stats.trainerShare
-                )}
+                value={money(monthlyFinancialTotals.trainerShare)}
                 subtext="Trainer earnings"
                 icon={UserRound}
               />
@@ -963,7 +978,9 @@ export default function AdminDashboard() {
               <div>
                 <span>Trainer Share</span>
                 <strong>
-                  {money(stats.trainerShare)}
+                  {money(
+                    monthlyFinancialTotals.trainerShare
+                  )}
                 </strong>
               </div>
 
@@ -996,6 +1013,9 @@ export default function AdminDashboard() {
 
               <div className="desktop-member-view">
                 <EntriesTable
+                monthlyTrainerShareByEntry={
+                  monthlyTrainerShareByEntry
+                }
                   entries={
                     activeMonthEntries.slice(
                       0,
@@ -1509,7 +1529,10 @@ function EntriesTable({
 
                   <strong>
                     {money(
-                      entry.trainer_share
+                      monthlyTrainerShareByEntry[
+                        entry.id
+                      ] ??
+                        entry.trainer_share
                     )}
                   </strong>
 

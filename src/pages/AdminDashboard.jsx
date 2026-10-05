@@ -31,6 +31,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { supabase } from '../lib/supabase'
 import useMonthlyFinancials from '../hooks/useMonthlyFinancials'
+import useMonthlyJkFinance from '../hooks/useMonthlyJkFinance'
 import MonthlyFinancialAdjustments from '../components/MonthlyFinancialAdjustments'
 import StatCard from '../components/StatCard'
 import AddEntryModal from '../components/AddEntryModal'
@@ -470,6 +471,11 @@ export default function AdminDashboard() {
     totals: monthlyFinancialTotals,
     reload: reloadMonthlyFinancials,
   } = useMonthlyFinancials(month)
+
+  const {
+    summary: jkFinance,
+    reload: reloadJkFinance,
+  } = useMonthlyJkFinance(month)
 
   const monthlyTrainerShareByEntry =
     useMemo(
@@ -939,41 +945,83 @@ export default function AdminDashboard() {
               />
 
               <StatCard
+                label="PT Business"
+                value={money(
+                  jkFinance.new_pt_business
+                )}
+                subtext="New packages this month"
+                icon={Dumbbell}
+              />
+
+              <StatCard
                 label="Amount Collected"
                 value={money(
-                  stats.totalCollected
+                  jkFinance.amount_collected
                 )}
                 subtext="Actual received"
                 icon={Banknote}
               />
 
               <StatCard
-                label="JK Fitness Share"
-                value={money(
-                  stats.adminShare
-                )}
-                subtext="Auto calculated"
-                icon={Dumbbell}
-              />
-
-              <StatCard
                 label="Trainer Share"
-                value={money(monthlyFinancialTotals.trainerShare)}
-                subtext="Trainer earnings"
+                value={money(
+                  jkFinance.trainer_payout_total
+                )}
+                subtext="PT payout this month"
                 icon={UserRound}
               />
 
               <StatCard
+                label="Carry-forward Deduction"
+                value={money(
+                  jkFinance.carry_forward_trainer_payout
+                )}
+                subtext="Old-package trainer payouts"
+                icon={Activity}
+              />
+
+              <StatCard
+                label="JK Before Salary"
+                value={money(
+                  jkFinance.jk_before_salary_change
+                )}
+                subtext="Business minus trainer share"
+                icon={Dumbbell}
+              />
+
+              <StatCard
                 label="Trainer Salary"
-                value={money(activeTrainerSalaryTotal)}
-                subtext="Monthly salary"
+                value={money(
+                  jkFinance.trainer_salary_total
+                )}
+                subtext="Monthly fixed salary"
                 icon={Banknote}
               />
 
               <StatCard
                 label="Trainer Total Payable"
-                value={money(trainerTotalPayable)}
-                subtext="Share + salary"
+                value={money(
+                  jkFinance.trainer_total_payable
+                )}
+                subtext="PT share + salary"
+                icon={Banknote}
+              />
+
+              <StatCard
+                label="JK Net Change"
+                value={money(
+                  jkFinance.jk_net_change_after_salary
+                )}
+                subtext="After trainer share + salary"
+                icon={Activity}
+              />
+
+              <StatCard
+                label="JK Running Balance"
+                value={money(
+                  jkFinance.jk_running_balance_after_salary
+                )}
+                subtext="Balance through selected month"
                 icon={Banknote}
               />
 
@@ -1018,14 +1066,9 @@ export default function AdminDashboard() {
               <div>
                 <span>PT Business</span>
                 <strong>
-                  {money(stats.ptRevenue)}
-                </strong>
-              </div>
-
-              <div>
-                <span>JK Fitness Share</span>
-                <strong>
-                  {money(stats.adminShare)}
+                  {money(
+                    jkFinance.new_pt_business
+                  )}
                 </strong>
               </div>
 
@@ -1033,7 +1076,25 @@ export default function AdminDashboard() {
                 <span>Trainer Share</span>
                 <strong>
                   {money(
-                    monthlyFinancialTotals.trainerShare
+                    jkFinance.trainer_payout_total
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>Carry-forward</span>
+                <strong>
+                  {money(
+                    jkFinance.carry_forward_trainer_payout
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>JK Net Balance</span>
+                <strong>
+                  {money(
+                    jkFinance.jk_running_balance_after_salary
                   )}
                 </strong>
               </div>

@@ -11,9 +11,6 @@ import {
   YAxis,
 } from 'recharts'
 
-import useMonthlyFinancials
-  from '../hooks/useMonthlyFinancials'
-
 function money(value) {
   return `₹${Number(
     value || 0
@@ -21,33 +18,120 @@ function money(value) {
 }
 
 export default function DashboardCharts({
+  entries,
   selectedMonth,
 }) {
-  const {
-    rows,
-    totals,
-  } = useMonthlyFinancials(
-    selectedMonth
-  )
+  const revenueData = useMemo(() => {
+    const monthEntries =
+      entries.filter(
+        (entry) =>
+          !entry.is_cancelled &&
+          entry.joined_on?.slice(0, 7) ===
+            selectedMonth
+      )
 
-  const revenueData =
-    useMemo(
-      () => [
-        {
-          name: 'Selected Month',
+    const ptBusiness =
+      monthEntries.reduce(
+        (sum, entry) =>
+          sum +
+          Number(entry.pt_amount || 0),
+        0
+      )
 
-          'PT Business':
-            totals.ptBusiness,
+    const jkShare =
+      monthEntries.reduce(
+        (sum, entry) =>
+          sum +
+          Number(entry.admin_share || 0),
+        0
+      )
 
-          'JK Fitness Share':
-            totals.adminShare,
+    const trainerShare =
+      monthEntries.reduce(
+        (sum, entry) =>
+          sum +
+          Number(entry.trainer_share || 0),
+        0
+      )
 
-          'Trainer Share':
-            totals.trainerShare,
-        },
-      ],
-      [totals]
-    )
+    return [
+      {
+        name: 'Selected Month',
+        'PT Business': ptBusiness,
+        'JK Fitness Share': jkShare,
+        'Package Trainer Share':
+          trainerShare,
+      },
+    ]
+  }, [entries, selectedMonth])
+
+  const trendData = useMemo(() => {
+    const [year, month] =
+      selectedMonth
+        .split('-')
+        .map(Number)
+
+    return Array.from({
+      length: 6,
+    }).map((_, index) => {
+      const d = new Date(
+        year,
+        month - 1 - (5 - index),
+        1
+      )
+
+      const key =
+        `${d.getFullYear()}-${String(
+          d.getMonth() + 1
+        ).padStart(2, '0')}`
+
+      const monthEntries =
+        entries.filter(
+          (entry) =>
+            !entry.is_cancelled &&
+            entry.joined_on?.slice(0, 7) ===
+              key
+        )
+
+      return {
+        month:
+          d.toLocaleDateString(
+            'en-IN',
+            { month: 'short' }
+          ),
+
+        'PT Business':
+          monthEntries.reduce(
+            (sum, entry) =>
+              sum +
+              Number(
+                entry.pt_amount || 0
+              ),
+            0
+          ),
+
+        'JK Share':
+          monthEntries.reduce(
+            (sum, entry) =>
+              sum +
+              Number(
+                entry.admin_share || 0
+              ),
+            0
+          ),
+
+        'Package Trainer Share':
+          monthEntries.reduce(
+            (sum, entry) =>
+              sum +
+              Number(
+                entry.trainer_share || 0
+              ),
+            0
+          ),
+      }
+    })
+  }, [entries, selectedMonth])
 
   return (
     <section className="dashboard-chart-grid">
@@ -57,11 +141,11 @@ export default function DashboardCharts({
         <div className="chart-heading">
           <div>
             <span className="section-kicker">
-              PT REVENUE
+              BUSINESS
             </span>
 
             <h3>
-              Monthly breakdown
+              Monthly package breakdown
             </h3>
           </div>
         </div>
@@ -72,7 +156,6 @@ export default function DashboardCharts({
             width="100%"
             height={280}
           >
-
             <BarChart
               data={revenueData}
               barGap={10}
@@ -135,13 +218,12 @@ export default function DashboardCharts({
               />
 
               <Bar
-                dataKey="Trainer Share"
+                dataKey="Package Trainer Share"
                 fill="#555555"
                 radius={[6, 6, 0, 0]}
               />
 
             </BarChart>
-
           </ResponsiveContainer>
 
         </div>
@@ -154,62 +236,91 @@ export default function DashboardCharts({
         <div className="chart-heading">
           <div>
             <span className="section-kicker">
-              MONTH SUMMARY
+              TREND
             </span>
 
             <h3>
-              Final values
+              Last 6 months
             </h3>
           </div>
         </div>
 
-        <div className="chart-summary-values">
+        <div className="chart-container">
 
-          <div>
-            <span>
-              Active PT allocations
-            </span>
+          <ResponsiveContainer
+            width="100%"
+            height={280}
+          >
 
-            <strong>
-              {rows.length}
-            </strong>
-          </div>
+            <BarChart
+              data={trendData}
+            >
 
-          <div>
-            <span>
-              PT Business
-            </span>
+              <CartesianGrid
+                stroke="#1e1e1e"
+                vertical={false}
+              />
 
-            <strong>
-              {money(
-                totals.ptBusiness
-              )}
-            </strong>
-          </div>
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fill: '#8a8a8a',
+                  fontSize: 10,
+                }}
+              />
 
-          <div>
-            <span>
-              JK Fitness
-            </span>
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fill: '#727272',
+                  fontSize: 9,
+                }}
+                tickFormatter={(value) =>
+                  `₹${Math.round(
+                    value / 1000
+                  )}k`
+                }
+              />
 
-            <strong>
-              {money(
-                totals.adminShare
-              )}
-            </strong>
-          </div>
+              <Tooltip
+                formatter={(value) =>
+                  money(value)
+                }
+                contentStyle={{
+                  background: '#101010',
+                  border:
+                    '1px solid #2a2a2a',
+                  borderRadius: 8,
+                  color: '#f4f4f4',
+                }}
+              />
 
-          <div>
-            <span>
-              Trainers
-            </span>
+              <Legend />
 
-            <strong>
-              {money(
-                totals.trainerShare
-              )}
-            </strong>
-          </div>
+              <Bar
+                dataKey="PT Business"
+                fill="#d9d9d9"
+                radius={[6, 6, 0, 0]}
+              />
+
+              <Bar
+                dataKey="JK Share"
+                fill="#858585"
+                radius={[6, 6, 0, 0]}
+              />
+
+              <Bar
+                dataKey="Package Trainer Share"
+                fill="#505050"
+                radius={[6, 6, 0, 0]}
+              />
+
+            </BarChart>
+
+          </ResponsiveContainer>
 
         </div>
 

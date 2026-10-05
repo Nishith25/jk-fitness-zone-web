@@ -893,7 +893,7 @@ export default function AdminDashboard() {
               <StatCard
                 label="JK Fitness Share"
                 value={money(
-                  monthlyFinancialTotals.adminShare
+                  stats.adminShare
                 )}
                 subtext="Auto calculated"
                 icon={Dumbbell}
@@ -902,7 +902,7 @@ export default function AdminDashboard() {
               <StatCard
                 label="Trainer Share"
                 value={money(
-                  monthlyFinancialTotals.trainerShare
+                  stats.trainerShare
                 )}
                 subtext="Trainer earnings"
                 icon={UserRound}
@@ -940,6 +940,7 @@ export default function AdminDashboard() {
             />
 
             <DashboardCharts
+              entries={entries}
               selectedMonth={month}
             />
 
@@ -948,7 +949,7 @@ export default function AdminDashboard() {
               <div>
                 <span>PT Business</span>
                 <strong>
-                  {money(monthlyFinancialTotals.ptBusiness)}
+                  {money(stats.ptRevenue)}
                 </strong>
               </div>
 

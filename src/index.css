@@ -6208,3 +6208,201 @@ textarea:focus {
     flex-direction: column;
   }
 }
+
+/* =========================================================
+   PROFESSIONAL ACTIVITY LOG
+========================================================= */
+
+.activity-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 18px 0 12px;
+  flex-wrap: wrap;
+}
+
+.activity-filter-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.activity-filter {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--jk-line);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--jk-muted);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.activity-filter.active {
+  color: var(--jk-white);
+  border-color: var(--jk-blue);
+  background: rgba(22,139,196,.10);
+}
+
+.activity-search {
+  min-width: 280px;
+}
+
+.activity-results-count {
+  color: var(--jk-muted);
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+.activity-detailed-row.professional {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  gap: 12px;
+  align-items: start;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--jk-line);
+}
+
+.activity-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.activity-title-row > div {
+  display: grid;
+  gap: 3px;
+}
+
+.activity-actor {
+  font-size: 12px;
+}
+
+.activity-main-title {
+  font-size: 12px;
+  color: var(--jk-white);
+}
+
+.activity-category-badge {
+  font-size: 8px;
+  letter-spacing: .05em;
+  font-weight: 800;
+  text-transform: uppercase;
+  border: 1px solid var(--jk-line);
+  border-radius: 999px;
+  padding: 3px 6px;
+  color: var(--jk-muted);
+  white-space: nowrap;
+}
+
+.activity-category-badge.financials {
+  border-color: var(--jk-green);
+  color: var(--jk-green);
+}
+
+.activity-category-badge.members,
+.activity-category-badge.trainers {
+  border-color: var(--jk-blue);
+  color: var(--jk-blue);
+}
+
+.audit-finance-panel {
+  margin-top: 11px;
+  padding: 11px;
+  border: 1px solid var(--jk-line);
+  border-radius: 7px;
+  background: var(--jk-panel-2);
+}
+
+.audit-month {
+  color: var(--jk-muted);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.audit-finance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.audit-finance-grid > div {
+  display: grid;
+  gap: 3px;
+}
+
+.audit-finance-grid span,
+.audit-finance-grid small {
+  color: var(--jk-muted);
+  font-size: 9px;
+}
+
+.audit-finance-grid strong {
+  font-size: 12px;
+}
+
+.audit-note {
+  margin-top: 9px;
+  display: grid;
+  gap: 3px;
+}
+
+.audit-note span {
+  color: var(--jk-muted);
+  font-size: 9px;
+}
+
+.audit-note strong {
+  font-size: 11px;
+}
+
+.activity-detailed-row.professional time {
+  color: var(--jk-muted);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+
+  .activity-toolbar {
+    align-items: stretch;
+  }
+
+  .activity-search {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .activity-filter-row {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    width: 100%;
+    padding-bottom: 4px;
+  }
+
+  .activity-filter {
+    white-space: nowrap;
+  }
+
+  .activity-detailed-row.professional {
+    grid-template-columns: 7px 1fr;
+  }
+
+  .activity-detailed-row.professional time {
+    grid-column: 2;
+    margin-top: 3px;
+  }
+
+  .activity-title-row {
+    flex-direction: column;
+  }
+
+  .audit-finance-grid {
+    grid-template-columns: 1fr;
+  }
+}

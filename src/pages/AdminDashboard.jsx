@@ -106,6 +106,24 @@ const FIELD_NAMES = {
   split_rule: 'Split Rule',
   is_cancelled: 'Cancelled',
   cancellation_reason: 'Cancellation Reason',
+  gym_fee_paid: 'Gym Fee Paid',
+  monthly_salary: 'Monthly Salary',
+  is_active: 'Active',
+  full_name: 'Name',
+  share_amount: 'Share Amount',
+  salary_amount: 'Salary Amount',
+  status: 'Status',
+  paid_at: 'Paid At',
+  month_start: 'Settlement Month',
+  allocation_month: 'Financial Month',
+  pt_business_override: 'Final PT Business',
+  admin_share_override: 'Final JK Share',
+  trainer_share_override: 'Final Trainer Share',
+  name: 'Name',
+  amount: 'Amount',
+  code: 'Duration Code',
+  label: 'Duration',
+  months: 'Months',
 }
 
 function getChanges(item) {
@@ -1617,10 +1635,480 @@ function MembershipStatusCell({ entry }) {
 function ActivityList({
   activities,
 }) {
+  const [activityCategory, setActivityCategory] =
+    useState('all')
+
+  const [activitySearch, setActivitySearch] =
+    useState('')
+
+  const categories = [
+    ['all', 'All'],
+    ['members', 'Members'],
+    ['financials', 'Financials'],
+    ['trainers', 'Trainers'],
+    ['settlements', 'Settlements'],
+    ['masters', 'Masters'],
+    ['sessions', 'Login & Logout'],
+  ]
+
+  function categoryFor(item) {
+    if (
+      item.table_name ===
+      'monthly_pt_overrides'
+    ) {
+      return 'financials'
+    }
+
+    if (
+      item.table_name ===
+      'member_entries'
+    ) {
+      return 'members'
+    }
+
+    if (
+      item.table_name ===
+      'staff_profiles'
+    ) {
+      return 'trainers'
+    }
+
+    if (
+      item.table_name ===
+      'trainer_settlements'
+    ) {
+      return 'settlements'
+    }
+
+    if (
+      [
+        'customer_presets',
+        'pt_amount_presets',
+        'duration_presets',
+      ].includes(item.table_name)
+    ) {
+      return 'masters'
+    }
+
+    if (
+      item.table_name ===
+      'staff_session'
+    ) {
+      return 'sessions'
+    }
+
+    return 'other'
+  }
+
+  function activityTitle(item) {
+    const customer =
+      item.new_data?.customer_name ||
+      item.old_data?.customer_name
+
+    if (
+      item.table_name ===
+      'monthly_pt_overrides'
+    ) {
+      if (item.action === 'insert') {
+        return `Adjusted monthly financials for ${
+          customer || 'customer'
+        }`
+      }
+
+      if (item.action === 'update') {
+        return `Updated monthly financials for ${
+          customer || 'customer'
+        }`
+      }
+
+      if (item.action === 'delete') {
+        return `Reset monthly financials for ${
+          customer || 'customer'
+        }`
+      }
+    }
+
+    if (
+      item.table_name ===
+      'member_entries'
+    ) {
+      if (item.action === 'insert') {
+        return `Added ${
+          customer || 'customer'
+        }`
+      }
+
+      if (
+        item.action === 'update' &&
+        item.old_data?.is_cancelled === false &&
+        item.new_data?.is_cancelled === true
+      ) {
+        return `Cancelled ${
+          customer || 'customer'
+        }`
+      }
+
+      if (
+        item.action === 'update' &&
+        item.old_data?.is_cancelled === true &&
+        item.new_data?.is_cancelled === false
+      ) {
+        return `Restored ${
+          customer || 'customer'
+        }`
+      }
+
+      if (item.action === 'update') {
+        return `Updated ${
+          customer || 'customer'
+        }`
+      }
+
+      if (item.action === 'delete') {
+        return `Deleted ${
+          customer || 'customer'
+        }`
+      }
+    }
+
+    if (
+      item.table_name ===
+      'staff_profiles'
+    ) {
+      const name =
+        item.new_data?.full_name ||
+        item.old_data?.full_name ||
+        'trainer'
+
+      if (item.action === 'insert') {
+        return `Created trainer ${name}`
+      }
+
+      if (item.action === 'update') {
+        return `Updated trainer ${name}`
+      }
+
+      if (item.action === 'delete') {
+        return `Deleted trainer ${name}`
+      }
+    }
+
+    if (
+      item.table_name ===
+      'trainer_settlements'
+    ) {
+      if (item.action === 'insert') {
+        return 'Created trainer settlement'
+      }
+
+      if (item.action === 'update') {
+        return 'Updated trainer settlement'
+      }
+
+      if (item.action === 'delete') {
+        return 'Deleted trainer settlement'
+      }
+    }
+
+    if (
+      item.table_name ===
+      'customer_presets'
+    ) {
+      const name =
+        item.new_data?.name ||
+        item.old_data?.name ||
+        'customer preset'
+
+      return `${
+        item.action === 'insert'
+          ? 'Added'
+          : item.action === 'delete'
+            ? 'Deleted'
+            : 'Updated'
+      } customer preset ${name}`
+    }
+
+    if (
+      item.table_name ===
+      'pt_amount_presets'
+    ) {
+      const amount =
+        item.new_data?.amount ??
+        item.old_data?.amount
+
+      return `${
+        item.action === 'insert'
+          ? 'Added'
+          : item.action === 'delete'
+            ? 'Deleted'
+            : 'Updated'
+      } PT amount ${money(amount)}`
+    }
+
+    if (
+      item.table_name ===
+      'duration_presets'
+    ) {
+      const label =
+        item.new_data?.label ||
+        item.old_data?.label ||
+        item.new_data?.code ||
+        item.old_data?.code ||
+        'duration'
+
+      return `${
+        item.action === 'insert'
+          ? 'Added'
+          : item.action === 'delete'
+            ? 'Deleted'
+            : 'Updated'
+      } duration ${label}`
+    }
+
+    if (
+      item.table_name ===
+      'staff_session'
+    ) {
+      if (item.action === 'login') {
+        return 'Logged in'
+      }
+
+      if (item.action === 'logout') {
+        return 'Logged out'
+      }
+
+      if (item.action === 'export_pdf') {
+        return 'Exported PDF report'
+      }
+
+      if (item.action === 'export_excel') {
+        return 'Exported Excel report'
+      }
+
+      if (item.action === 'export_csv') {
+        return 'Exported CSV report'
+      }
+
+      return String(item.action || 'Activity')
+        .replaceAll('_', ' ')
+    }
+
+    return `${item.action || 'Activity'}`
+  }
+
+  const visibleActivities =
+    useMemo(() => {
+      const query =
+        activitySearch
+          .trim()
+          .toLowerCase()
+
+      return activities.filter(
+        (item) => {
+          const category =
+            categoryFor(item)
+
+          if (
+            activityCategory !== 'all' &&
+            category !== activityCategory
+          ) {
+            return false
+          }
+
+          if (!query) return true
+
+          const searchable =
+            [
+              item.actor_name,
+              item.actor_role,
+              item.action,
+              item.table_name,
+              item.new_data?.customer_name,
+              item.old_data?.customer_name,
+              JSON.stringify(
+                item.new_data || {}
+              ),
+              JSON.stringify(
+                item.old_data || {}
+              ),
+            ]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase()
+
+          return searchable.includes(query)
+        }
+      )
+    }, [
+      activities,
+      activityCategory,
+      activitySearch,
+    ])
+
+  function FinancialDetails({
+    item,
+  }) {
+    const data =
+      item.new_data ||
+      item.old_data ||
+      {}
+
+    const monthLabel =
+      data.allocation_month
+        ? new Date(
+            `${data.allocation_month}T00:00:00`
+          ).toLocaleString(
+            'en-IN',
+            {
+              month: 'long',
+              year: 'numeric',
+            }
+          )
+        : ''
+
+    const calculatedPT =
+      Number(
+        data.calculated_pt_business ||
+        0
+      )
+
+    const calculatedAdmin =
+      Number(
+        data.calculated_admin_share ||
+        0
+      )
+
+    const calculatedTrainer =
+      Number(
+        data.calculated_trainer_share ||
+        0
+      )
+
+    if (item.action === 'delete') {
+      return (
+        <div className="audit-finance-panel">
+
+          {monthLabel && (
+            <div className="audit-month">
+              {monthLabel}
+            </div>
+          )}
+
+          <div className="audit-finance-grid">
+
+            <div>
+              <span>PT Business</span>
+              <strong>
+                {money(calculatedPT)}
+              </strong>
+            </div>
+
+            <div>
+              <span>JK Share</span>
+              <strong>
+                {money(calculatedAdmin)}
+              </strong>
+            </div>
+
+            <div>
+              <span>Trainer Share</span>
+              <strong>
+                {money(calculatedTrainer)}
+              </strong>
+            </div>
+
+          </div>
+
+          <small>
+            Reset to automatically calculated values
+          </small>
+
+        </div>
+      )
+    }
+
+    const ptFinal =
+      item.new_data
+        ?.pt_business_override ??
+      calculatedPT
+
+    const adminFinal =
+      item.new_data
+        ?.admin_share_override ??
+      calculatedAdmin
+
+    const trainerFinal =
+      item.new_data
+        ?.trainer_share_override ??
+      calculatedTrainer
+
+    return (
+      <div className="audit-finance-panel">
+
+        {monthLabel && (
+          <div className="audit-month">
+            {monthLabel}
+          </div>
+        )}
+
+        <div className="audit-finance-grid">
+
+          <div>
+            <span>PT Business</span>
+
+            <small>
+              Calculated {money(calculatedPT)}
+            </small>
+
+            <strong>
+              Final {money(ptFinal)}
+            </strong>
+          </div>
+
+          <div>
+            <span>JK Share</span>
+
+            <small>
+              Calculated {money(calculatedAdmin)}
+            </small>
+
+            <strong>
+              Final {money(adminFinal)}
+            </strong>
+          </div>
+
+          <div>
+            <span>Trainer Share</span>
+
+            <small>
+              Calculated {money(calculatedTrainer)}
+            </small>
+
+            <strong>
+              Final {money(trainerFinal)}
+            </strong>
+          </div>
+
+        </div>
+
+        {item.new_data?.notes && (
+          <div className="audit-note">
+            <span>Reason</span>
+            <strong>
+              {item.new_data.notes}
+            </strong>
+          </div>
+        )}
+
+      </div>
+    )
+  }
+
   if (!activities.length) {
     return (
       <div className="empty-state">
         <Activity size={34} />
+
         <strong>
           No activity yet
         </strong>
@@ -1629,139 +2117,215 @@ function ActivityList({
   }
 
   return (
-    <div className="activity-list">
+    <div>
 
-      {activities.map((item) => {
+      <div className="activity-toolbar">
 
-        const isSessionEvent =
-          item.table_name === 'staff_session'
+        <div className="activity-filter-row">
 
-        const customer =
-          item.new_data?.customer_name ||
-          item.old_data?.customer_name ||
-          (isSessionEvent ? '' : 'Customer')
+          {categories.map(
+            ([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                className={
+                  activityCategory === value
+                    ? 'activity-filter active'
+                    : 'activity-filter'
+                }
+                onClick={() =>
+                  setActivityCategory(
+                    value
+                  )
+                }
+              >
+                {label}
+              </button>
+            )
+          )}
 
-        const changes =
-          getChanges(item)
+        </div>
 
-        return (
-          <div
-            className="activity-detailed-row"
-            key={item.id}
-          >
+        <div className="search-box activity-search">
 
-            <div
-              className={`activity-dot ${item.action}`}
-            />
+          <Search size={16} />
 
-            <div className="activity-detailed-content">
+          <input
+            value={activitySearch}
+            onChange={(e) =>
+              setActivitySearch(
+                e.target.value
+              )
+            }
+            placeholder="Search customer, trainer or action..."
+          />
 
-              <div className="activity-title">
+        </div>
 
-                <strong>
-                  {item.actor_name ||
-                    (item.actor_role === 'admin'
-                      ? 'Admin'
-                      : item.actor_role === 'trainer'
-                        ? 'Trainer'
-                        : 'System')}
-                </strong>
+      </div>
 
-                <span>
-                  {item.action === 'login' && ' logged in'}
-                  {item.action === 'logout' && ' logged out'}
+      <div className="activity-results-count">
+        {visibleActivities.length}{' '}
+        {visibleActivities.length === 1
+          ? 'activity'
+          : 'activities'}
+      </div>
 
-                  {item.action === 'insert' && item.table_name === 'member_entries' && ' added '}
-                  {item.action === 'update' &&
-                    item.table_name === 'member_entries' &&
-                    item.old_data?.is_cancelled === false &&
-                    item.new_data?.is_cancelled === true &&
-                    ' cancelled '}
+      {!visibleActivities.length ? (
+        <div className="empty-state">
 
-                  {item.action === 'update' &&
-                    item.table_name === 'member_entries' &&
-                    item.old_data?.is_cancelled === true &&
-                    item.new_data?.is_cancelled === false &&
-                    ' restored '}
+          <strong>
+            No matching activity
+          </strong>
 
-                  {item.action === 'update' &&
-                    item.table_name === 'member_entries' &&
-                    item.old_data?.is_cancelled === item.new_data?.is_cancelled &&
-                    ' updated '}
-                  {item.action === 'delete' && item.table_name === 'member_entries' && ' deleted '}
+          <span>
+            Try another filter or search.
+          </span>
 
-                  {item.action === 'insert' && item.table_name === 'trainer_settlements' && ' created a trainer settlement'}
-                  {item.action === 'update' && item.table_name === 'trainer_settlements' && ' updated a trainer settlement'}
-                  {item.action === 'delete' && item.table_name === 'trainer_settlements' && ' deleted a trainer settlement'}
+        </div>
+      ) : (
+        <div className="activity-list">
 
-                  {item.action === 'insert' && item.table_name === 'staff_profiles' && ' created a staff profile'}
-                  {item.action === 'update' && item.table_name === 'staff_profiles' && ' updated a staff profile'}
-                  {item.action === 'delete' && item.table_name === 'staff_profiles' && ' deleted a staff profile'}
+          {visibleActivities.map(
+            (item) => {
+              const category =
+                categoryFor(item)
 
-                  {customer && <b>{customer}</b>}
-                </span>
+              const changes =
+                getChanges(item)
 
-              </div>
+              return (
+                <div
+                  className="activity-detailed-row professional"
+                  key={item.id}
+                >
 
-              {item.table_name === 'staff_session' && (
-                <div className="session-detail">
-                  <span>
-                    {item.new_data?.portal
-                      ? `Portal: ${item.new_data.portal}`
-                      : 'Staff session'}
-                  </span>
-                </div>
-              )}
+                  <div
+                    className={`activity-dot ${category}`}
+                  />
 
-              {changes.length > 0 && (
-                <div className="change-list">
+                  <div className="activity-detailed-content">
 
-                  {changes.map(
-                    (change) => (
-                      <div
-                        className="change-item"
-                        key={change.key}
-                      >
-                        <span>
-                          {change.label}
-                        </span>
+                    <div className="activity-title-row">
 
-                        <del>
-                          {String(
-                            change.before ??
-                              '—'
+                      <div>
+                        <strong className="activity-actor">
+                          {item.actor_name ||
+                            (item.actor_role ===
+                            'admin'
+                              ? 'Admin'
+                              : item.actor_role ===
+                                'trainer'
+                                ? 'Trainer'
+                                : 'System')}
+                        </strong>
+
+                        <span className="activity-main-title">
+                          {activityTitle(
+                            item
                           )}
-                        </del>
-
-                        <span className="change-arrow">
-                          →
                         </span>
-
-                        <ins>
-                          {String(
-                            change.after ??
-                              '—'
-                          )}
-                        </ins>
                       </div>
-                    )
-                  )}
+
+                      <span className={`activity-category-badge ${category}`}>
+                        {categories.find(
+                          ([value]) =>
+                            value ===
+                            category
+                        )?.[1] ||
+                          'Activity'}
+                      </span>
+
+                    </div>
+
+                    {item.table_name ===
+                      'monthly_pt_overrides' && (
+                      <FinancialDetails
+                        item={item}
+                      />
+                    )}
+
+                    {item.table_name ===
+                      'staff_session' &&
+                      item.new_data?.portal && (
+                      <div className="session-detail">
+                        Portal:{' '}
+                        {item.new_data.portal}
+                      </div>
+                    )}
+
+                    {item.table_name !==
+                      'monthly_pt_overrides' &&
+                      changes.length > 0 && (
+                      <div className="change-list">
+
+                        {changes.map(
+                          (change) => (
+                            <div
+                              className="change-item"
+                              key={
+                                change.key
+                              }
+                            >
+                              <span>
+                                {
+                                  change.label
+                                }
+                              </span>
+
+                              <del>
+                                {String(
+                                  change.before ??
+                                    '—'
+                                )}
+                              </del>
+
+                              <span className="change-arrow">
+                                →
+                              </span>
+
+                              <ins>
+                                {String(
+                                  change.after ??
+                                    '—'
+                                )}
+                              </ins>
+                            </div>
+                          )
+                        )}
+
+                      </div>
+                    )}
+
+                  </div>
+
+                  <time>
+                    {item.created_at
+                      ? new Date(
+                          item.created_at
+                        ).toLocaleString(
+                          'en-IN',
+                          {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute:
+                              '2-digit',
+                          }
+                        )
+                      : ''}
+                  </time>
 
                 </div>
-              )}
+              )
+            }
+          )}
 
-            </div>
-
-            <time>
-              {formatTime(
-                item.created_at
-              )}
-            </time>
-
-          </div>
-        )
-      })}
+        </div>
+      )}
 
     </div>
   )
 }
+

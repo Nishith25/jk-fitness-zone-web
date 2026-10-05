@@ -1063,6 +1063,12 @@ export default function AdminDashboard() {
             <div className="desktop-member-view">
               <EntriesTable
                 entries={filteredEntries}
+                monthlyTrainerShareByEntry={Object.fromEntries(
+                  monthlyFinancialRows.map((row) => [
+                    row.entry_id,
+                    Number(row.final_trainer_share || 0),
+                  ])
+                )}
                 onEdit={setEditingEntry}
                 onCancel={cancelEntry}
                 onRestore={restoreEntry}
@@ -1366,6 +1372,7 @@ export default function AdminDashboard() {
 
 function EntriesTable({
   entries,
+  monthlyTrainerShareByEntry = {},
   onEdit,
   onCancel,
   onRestore,

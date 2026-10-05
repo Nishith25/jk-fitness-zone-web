@@ -19,6 +19,7 @@ import {
 
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import useMonthlyFinancials from '../hooks/useMonthlyFinancials'
 import StatCard from '../components/StatCard'
 import AddEntryModal from '../components/AddEntryModal'
 import AppLogo from '../components/AppLogo'
@@ -152,12 +153,14 @@ export default function TrainerDashboard() {
     }
   }, [loadData])
 
+  const {
+    rows: monthlyFinancialRows,
+    totals: monthlyFinancialTotals,
+  } = useMonthlyFinancials(month)
+
   const monthEntries = useMemo(() => {
-    return getMonthlyAllocations(
-      entries,
-      month
-    )
-  }, [entries, month])
+    return monthlyFinancialRows
+  }, [monthlyFinancialRows])
 
   const filteredMonthEntries = useMemo(() => {
     const query =
@@ -207,28 +210,15 @@ export default function TrainerDashboard() {
         monthEntries.length,
 
       total:
-        monthEntries.reduce(
-          (sum, entry) =>
-            sum +
-            Number(
-              entry.monthly_pt_amount ||
-              0
-            ),
-          0
-        ),
+        monthlyFinancialTotals.ptBusiness,
 
       earning:
-        monthEntries.reduce(
-          (sum, entry) =>
-            sum +
-            Number(
-              entry.monthly_trainer_share ||
-              0
-            ),
-          0
-        ),
+        monthlyFinancialTotals.trainerShare,
     }
-  }, [monthEntries])
+  }, [
+    monthEntries,
+    monthlyFinancialTotals,
+  ])
 
   const settlement = settlements.find(
     (item) =>
@@ -553,7 +543,7 @@ export default function TrainerDashboard() {
               {filteredMonthEntries.map((entry) => (
                 <article
                   className="trainer-customer-card"
-                  key={entry.id}
+                  key={`${entry.entry_id}-${entry.allocation_month}`}
                 >
 
                   <div className="trainer-customer-head">
@@ -598,7 +588,7 @@ export default function TrainerDashboard() {
                       </strong>
 
                       <small>
-                        Monthly · Package {money(entry.pt_amount)}
+                        Monthly · Package {money(entry.final_pt_amount)}
                         {' / '}
                         {entry.duration_months}M
                       </small>

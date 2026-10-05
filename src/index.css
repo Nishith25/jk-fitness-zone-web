@@ -6081,3 +6081,130 @@ textarea:focus {
     width: 100%;
   }
 }
+
+/* =========================================================
+   MONTHLY FINANCIAL OVERRIDES
+========================================================= */
+
+.monthly-adjustment-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.monthly-adjustment-row {
+  border: 1px solid var(--jk-line);
+  background: var(--jk-panel);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.monthly-adjustment-customer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.monthly-adjustment-customer > div {
+  display: grid;
+  gap: 4px;
+}
+
+.monthly-adjustment-customer span {
+  color: var(--jk-muted);
+  font-size: 11px;
+}
+
+.manual-adjusted-badge {
+  border: 1px solid var(--jk-blue);
+  color: var(--jk-blue) !important;
+  border-radius: 999px;
+  padding: 4px 7px;
+  font-size: 9px !important;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.monthly-adjustment-values {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.monthly-adjustment-values > div {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  background: var(--jk-panel-2);
+  border-radius: 6px;
+}
+
+.monthly-adjustment-values span,
+.monthly-adjustment-values small {
+  color: var(--jk-muted);
+  font-size: 10px;
+}
+
+.monthly-adjustment-values strong {
+  font-size: 15px;
+}
+
+.monthly-adjustment-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.monthly-override-editor {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(120px, 1fr));
+  gap: 10px;
+
+  margin-top: 14px;
+  padding-top: 14px;
+
+  border-top: 1px solid var(--jk-line);
+}
+
+.monthly-override-editor label {
+  display: grid;
+  gap: 6px;
+}
+
+.monthly-override-editor label span {
+  color: var(--jk-muted);
+  font-size: 10px;
+}
+
+.monthly-override-editor input {
+  min-height: 42px;
+}
+
+.monthly-override-notes {
+  grid-column: 1 / -1;
+}
+
+.monthly-override-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 760px) {
+  .monthly-adjustment-values {
+    grid-template-columns: 1fr;
+  }
+
+  .monthly-override-editor {
+    grid-template-columns: 1fr;
+  }
+
+  .monthly-adjustment-customer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

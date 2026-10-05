@@ -30,6 +30,8 @@ import {
 import { useNavigate } from 'react-router-dom'
 
 import { supabase } from '../lib/supabase'
+import useMonthlyFinancials from '../hooks/useMonthlyFinancials'
+import MonthlyFinancialAdjustments from '../components/MonthlyFinancialAdjustments'
 import StatCard from '../components/StatCard'
 import AddEntryModal from '../components/AddEntryModal'
 import EditEntryModal from '../components/EditEntryModal'
@@ -447,6 +449,12 @@ export default function AdminDashboard() {
         }
       )
     }, [monthEntries, search])
+
+  const {
+    rows: monthlyFinancialRows,
+    totals: monthlyFinancialTotals,
+    reload: reloadMonthlyFinancials,
+  } = useMonthlyFinancials(month)
 
   async function logout() {
     try {
@@ -870,7 +878,7 @@ export default function AdminDashboard() {
               <StatCard
                 label="JK Fitness Share"
                 value={money(
-                  stats.adminShare
+                  monthlyFinancialTotals.adminShare
                 )}
                 subtext="Auto calculated"
                 icon={Dumbbell}
@@ -879,7 +887,7 @@ export default function AdminDashboard() {
               <StatCard
                 label="Trainer Share"
                 value={money(
-                  stats.trainerShare
+                  monthlyFinancialTotals.trainerShare
                 )}
                 subtext="Trainer earnings"
                 icon={UserRound}
@@ -917,7 +925,6 @@ export default function AdminDashboard() {
             />
 
             <DashboardCharts
-              entries={entries}
               selectedMonth={month}
             />
 
@@ -926,7 +933,7 @@ export default function AdminDashboard() {
               <div>
                 <span>PT Business</span>
                 <strong>
-                  {money(stats.ptRevenue)}
+                  {money(monthlyFinancialTotals.ptBusiness)}
                 </strong>
               </div>
 
@@ -1058,6 +1065,17 @@ export default function AdminDashboard() {
             </div>
 
           </section>
+        )}
+
+        {tab === 'members' && (
+          <MonthlyFinancialAdjustments
+            month={month}
+            rows={monthlyFinancialRows}
+            onChanged={async () => {
+              await reloadMonthlyFinancials()
+              await loadData()
+            }}
+          />
         )}
 
         {tab === 'trainers' && (
@@ -1204,7 +1222,15 @@ export default function AdminDashboard() {
         {tab === 'settlements' && (
           <TrainerSettlements
             trainers={trainers}
-            entries={entries}
+            entries={monthlyFinancialRows.map((row) => ({
+              ...row,
+              id: row.entry_id,
+              joined_on: row.allocation_month,
+              trainer_share: row.final_trainer_share,
+              admin_share: row.final_admin_share,
+              pt_amount: row.final_pt_amount,
+              is_cancelled: false,
+            }))}
             selectedMonth={month}
             onChanged={loadData}
           />

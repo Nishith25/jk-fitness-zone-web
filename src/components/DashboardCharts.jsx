@@ -11,9 +11,8 @@ import {
   YAxis,
 } from 'recharts'
 
-import {
-  getMonthlyTotals,
-} from '../utils/monthlyAllocation'
+import useMonthlyFinancials
+  from '../hooks/useMonthlyFinancials'
 
 function money(value) {
   return `₹${Number(
@@ -22,78 +21,33 @@ function money(value) {
 }
 
 export default function DashboardCharts({
-  entries,
   selectedMonth,
 }) {
-  const revenueData = useMemo(() => {
-    const totals =
-      getMonthlyTotals(
-        entries,
-        selectedMonth
-      )
+  const {
+    rows,
+    totals,
+  } = useMonthlyFinancials(
+    selectedMonth
+  )
 
-    return [
-      {
-        name: 'Selected Month',
+  const revenueData =
+    useMemo(
+      () => [
+        {
+          name: 'Selected Month',
 
-        'PT Business':
-          totals.ptBusiness,
+          'PT Business':
+            totals.ptBusiness,
 
-        'JK Fitness Share':
-          totals.adminShare,
+          'JK Fitness Share':
+            totals.adminShare,
 
-        'Trainer Share':
-          totals.trainerShare,
-      },
-    ]
-  }, [entries, selectedMonth])
-
-  const trendData = useMemo(() => {
-    const [year, month] =
-      selectedMonth
-        .split('-')
-        .map(Number)
-
-    return Array.from({
-      length: 6,
-    }).map((_, index) => {
-      const d = new Date(
-        year,
-        month - 1 - (5 - index),
-        1
-      )
-
-      const key =
-        `${d.getFullYear()}-${String(
-          d.getMonth() + 1
-        ).padStart(2, '0')}`
-
-      const totals =
-        getMonthlyTotals(
-          entries,
-          key
-        )
-
-      return {
-        month:
-          d.toLocaleDateString(
-            'en-IN',
-            {
-              month: 'short',
-            }
-          ),
-
-        'PT Business':
-          totals.ptBusiness,
-
-        'JK Share':
-          totals.adminShare,
-
-        'Trainer Share':
-          totals.trainerShare,
-      }
-    })
-  }, [entries, selectedMonth])
+          'Trainer Share':
+            totals.trainerShare,
+        },
+      ],
+      [totals]
+    )
 
   return (
     <section className="dashboard-chart-grid">
@@ -113,10 +67,12 @@ export default function DashboardCharts({
         </div>
 
         <div className="chart-container">
+
           <ResponsiveContainer
             width="100%"
             height={280}
           >
+
             <BarChart
               data={revenueData}
               barGap={10}
@@ -129,21 +85,21 @@ export default function DashboardCharts({
 
               <XAxis
                 dataKey="name"
+                axisLine={false}
+                tickLine={false}
                 tick={{
                   fill: '#8a8a8a',
                   fontSize: 10,
                 }}
-                axisLine={false}
-                tickLine={false}
               />
 
               <YAxis
+                axisLine={false}
+                tickLine={false}
                 tick={{
                   fill: '#727272',
                   fontSize: 9,
                 }}
-                axisLine={false}
-                tickLine={false}
                 tickFormatter={(value) =>
                   `₹${Math.round(
                     value / 1000
@@ -161,16 +117,10 @@ export default function DashboardCharts({
                     '1px solid #2a2a2a',
                   borderRadius: 8,
                   color: '#f4f4f4',
-                  fontSize: 11,
                 }}
               />
 
-              <Legend
-                wrapperStyle={{
-                  fontSize: 10,
-                  color: '#bdbdbd',
-                }}
-              />
+              <Legend />
 
               <Bar
                 dataKey="PT Business"
@@ -191,7 +141,9 @@ export default function DashboardCharts({
               />
 
             </BarChart>
+
           </ResponsiveContainer>
+
         </div>
 
       </div>
@@ -202,90 +154,63 @@ export default function DashboardCharts({
         <div className="chart-heading">
           <div>
             <span className="section-kicker">
-              TREND
+              MONTH SUMMARY
             </span>
 
             <h3>
-              Last 6 months
+              Final values
             </h3>
           </div>
         </div>
 
-        <div className="chart-container">
-          <ResponsiveContainer
-            width="100%"
-            height={280}
-          >
-            <BarChart
-              data={trendData}
-              barGap={6}
-            >
+        <div className="chart-summary-values">
 
-              <CartesianGrid
-                stroke="#1e1e1e"
-                vertical={false}
-              />
+          <div>
+            <span>
+              Active PT allocations
+            </span>
 
-              <XAxis
-                dataKey="month"
-                tick={{
-                  fill: '#8a8a8a',
-                  fontSize: 10,
-                }}
-                axisLine={false}
-                tickLine={false}
-              />
+            <strong>
+              {rows.length}
+            </strong>
+          </div>
 
-              <YAxis
-                tick={{
-                  fill: '#727272',
-                  fontSize: 9,
-                }}
-                axisLine={false}
-                tickLine={false}
-                tickFormatter={(value) =>
-                  `₹${Math.round(
-                    value / 1000
-                  )}k`
-                }
-              />
+          <div>
+            <span>
+              PT Business
+            </span>
 
-              <Tooltip
-                formatter={(value) =>
-                  money(value)
-                }
-                contentStyle={{
-                  background: '#101010',
-                  border:
-                    '1px solid #2a2a2a',
-                  borderRadius: 8,
-                  color: '#f4f4f4',
-                  fontSize: 11,
-                }}
-              />
+            <strong>
+              {money(
+                totals.ptBusiness
+              )}
+            </strong>
+          </div>
 
-              <Legend />
+          <div>
+            <span>
+              JK Fitness
+            </span>
 
-              <Bar
-                dataKey="PT Business"
-                fill="#d9d9d9"
-                radius={[6, 6, 0, 0]}
-              />
+            <strong>
+              {money(
+                totals.adminShare
+              )}
+            </strong>
+          </div>
 
-              <Bar
-                dataKey="JK Share"
-                fill="#858585"
-                radius={[6, 6, 0, 0]}
-              />
+          <div>
+            <span>
+              Trainers
+            </span>
 
-              <Bar
-                dataKey="Trainer Share"
-                fill="#505050"
-                radius={[6, 6, 0, 0]}
-              />
+            <strong>
+              {money(
+                totals.trainerShare
+              )}
+            </strong>
+          </div>
 
-            </BarChart>
-          </ResponsiveContainer>
         </div>
 
       </div>

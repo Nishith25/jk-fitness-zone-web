@@ -118,18 +118,15 @@ function getChanges(item) {
   }
 
   return Object.keys(FIELD_NAMES)
-    .filter((key) => {
-      useEffect(() => {
-    if (!month) return
-
-    loadData()
-  }, [month])
-
-  return (
-        JSON.stringify(item.old_data[key]) !==
-        JSON.stringify(item.new_data[key])
-      )
-    })
+    .filter(
+      (key) =>
+        JSON.stringify(
+          item.old_data[key]
+        ) !==
+        JSON.stringify(
+          item.new_data[key]
+        )
+    )
     .map((key) => ({
       key,
       label: FIELD_NAMES[key],

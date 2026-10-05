@@ -487,6 +487,32 @@ export default function AdminDashboard() {
       [monthlyFinancialRows]
     )
 
+  const activeTrainerSalaryTotal =
+    useMemo(
+      () =>
+        trainers
+          .filter(
+            (trainer) =>
+              trainer.is_active
+          )
+          .reduce(
+            (sum, trainer) =>
+              sum +
+              Number(
+                trainer.monthly_salary || 0
+              ),
+            0
+          ),
+      [trainers]
+    )
+
+  const trainerTotalPayable =
+    Number(
+      monthlyFinancialTotals.trainerShare || 0
+    ) +
+    activeTrainerSalaryTotal
+
+
   const monthlyFinancialByEntry =
     useMemo(
       () =>
@@ -935,6 +961,20 @@ export default function AdminDashboard() {
                 value={money(monthlyFinancialTotals.trainerShare)}
                 subtext="Trainer earnings"
                 icon={UserRound}
+              />
+
+              <StatCard
+                label="Trainer Salary"
+                value={money(activeTrainerSalaryTotal)}
+                subtext="Monthly salary"
+                icon={Banknote}
+              />
+
+              <StatCard
+                label="Trainer Total Payable"
+                value={money(trainerTotalPayable)}
+                subtext="Share + salary"
+                icon={Banknote}
               />
 
             </section>

@@ -1,38 +1,46 @@
-import {
-  RotateCcw,
-  Save,
-} from 'lucide-react'
-
-import {
-  useEffect,
-  useState,
-} from 'react'
-
+import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 function money(value) {
-  return `₹${Number(
-    value || 0
-  ).toLocaleString('en-IN')}`
+  return `₹${Number(value || 0).toLocaleString(
+    'en-IN'
+  )}`
 }
 
-function amountValue(value) {
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return ''
-  }
+function date(value) {
+  if (!value) return '—'
 
-  return String(value)
+  return new Date(
+    `${value}T00:00:00`
+  ).toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
+}
+
+function splitValues(jk, trainer) {
+  const a = Number(jk || 0)
+  const b = Number(trainer || 0)
+  const total = a + b
+
+  if (!total) return '—'
+
+  const jkPercent = Math.round(
+    (a / total) * 100
+  )
+
+  return `${jkPercent} / ${
+    100 - jkPercent
+  }`
 }
 
 export default function MonthlyFinancialAdjustments({
-  month,
-  rows,
+  rows = [],
+  selectedMonth,
   onChanged,
 }) {
-  const [editing, setEditing] =
+  const [editingId, setEditingId] =
     useState(null)
 
   const [form, setForm] = useState({
@@ -45,74 +53,89 @@ export default function MonthlyFinancialAdjustments({
   const [saving, setSaving] =
     useState(false)
 
-  useEffect(() => {
-    if (!editing) return
+  function beginEdit(row) {
+    setEditingId(row.entry_id)
 
     setForm({
-      pt: amountValue(
-        editing.final_pt_amount
+      pt: String(
+        row.final_pt_amount ?? 0
       ),
-
-      admin: amountValue(
-        editing.final_admin_share
+      admin: String(
+        row.final_admin_share ?? 0
       ),
-
-      trainer: amountValue(
-        editing.final_trainer_share
+      trainer: String(
+        row.final_trainer_share ?? 0
       ),
-
       notes:
-        editing.override_notes || '',
+        row.override_notes || '',
     })
-  }, [editing])
-
-  async function saveOverride() {
-    if (!editing) return
-
-    setSaving(true)
-
-    const { error } =
-      await supabase.rpc(
-        'set_monthly_pt_override',
-        {
-          p_entry_id:
-            editing.entry_id,
-
-          p_allocation_month:
-            `${month}-01`,
-
-          p_pt_business:
-            form.pt === ''
-              ? null
-              : Number(form.pt),
-
-          p_admin_share:
-            form.admin === ''
-              ? null
-              : Number(form.admin),
-
-          p_trainer_share:
-            form.trainer === ''
-              ? null
-              : Number(form.trainer),
-
-          p_notes:
-            form.notes || null,
-        }
-      )
-
-    setSaving(false)
-
-    if (error) {
-      alert(error.message)
-      return
-    }
-
-    setEditing(null)
-    await onChanged?.()
   }
 
-  async function resetOverride(row) {
+  function stopEdit() {
+    setEditingId(null)
+
+    setForm({
+      pt: '',
+      admin: '',
+      trainer: '',
+      notes: '',
+    })
+  }
+
+  async function save(row) {
+    try {
+      setSaving(true)
+
+      const { error } =
+        await supabase.rpc(
+          'set_monthly_pt_override',
+          {
+            p_entry_id:
+              row.entry_id,
+
+            p_allocation_month:
+              row.allocation_month,
+
+            p_pt_business:
+              Number(form.pt || 0),
+
+            p_admin_share:
+              Number(
+                form.admin || 0
+              ),
+
+            p_trainer_share:
+              Number(
+                form.trainer || 0
+              ),
+
+            p_notes:
+              form.notes?.trim() ||
+              null,
+          }
+        )
+
+      if (error) throw error
+
+      stopEdit()
+
+      await onChanged?.()
+    } catch (error) {
+      console.error(
+        'Unable to save final values:',
+        error
+      )
+
+      alert(
+        error.message ||
+          'Unable to save final values.'
+      )
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function reset(row) {
     const confirmed =
       window.confirm(
         `Reset ${row.customer_name} to calculated values for this month?`
@@ -120,299 +143,382 @@ export default function MonthlyFinancialAdjustments({
 
     if (!confirmed) return
 
-    const { error } =
-      await supabase.rpc(
-        'clear_monthly_pt_override',
-        {
-          p_entry_id:
-            row.entry_id,
+    try {
+      setSaving(true)
 
-          p_allocation_month:
-            `${month}-01`,
-        }
+      const { error } =
+        await supabase.rpc(
+          'clear_monthly_pt_override',
+          {
+            p_entry_id:
+              row.entry_id,
+
+            p_allocation_month:
+              row.allocation_month,
+          }
+        )
+
+      if (error) throw error
+
+      await onChanged?.()
+    } catch (error) {
+      console.error(
+        'Unable to reset final values:',
+        error
       )
 
-    if (error) {
-      alert(error.message)
-      return
+      alert(
+        error.message ||
+          'Unable to reset final values.'
+      )
+    } finally {
+      setSaving(false)
     }
+  }
 
-    setEditing(null)
-    await onChanged?.()
+  if (!rows.length) {
+    return (
+      <div className="empty-state">
+        <strong>
+          No monthly PT allocations
+        </strong>
+
+        <span>
+          No trainer-share allocation exists
+          for this month.
+        </span>
+      </div>
+    )
   }
 
   return (
-    <section className="content-card monthly-adjustments">
+    <div className="monthly-financial-list">
 
-      <div className="card-heading">
-        <div>
-          <span className="section-kicker">
-            MONTHLY FINANCE
-          </span>
+      {rows.map((row) => {
+        const editing =
+          editingId === row.entry_id
 
-          <h2>
-            Final monthly values
-          </h2>
+        const finalSplit =
+          splitValues(
+            row.final_admin_share,
+            row.final_trainer_share
+          )
 
-          <p className="section-subtext">
-            Auto-calculated first. Admin may
-            override final values independently.
-          </p>
-        </div>
-      </div>
+        const calculatedSplit =
+          splitValues(
+            row.monthly_admin_share,
+            row.monthly_trainer_share
+          )
 
-      {!rows.length ? (
-        <div className="empty-state">
-          <strong>
-            No PT allocations
-          </strong>
+        return (
+          <article
+            className="monthly-financial-card"
+            key={`${row.entry_id}-${row.allocation_month}`}
+          >
 
-          <span>
-            No PT value applies to this month.
-          </span>
-        </div>
-      ) : (
-        <div className="monthly-adjustment-list">
+            <div className="monthly-financial-header">
 
-          {rows.map((row) => (
-            <div
-              className="monthly-adjustment-row"
-              key={`${row.entry_id}-${row.allocation_month}`}
-            >
+              <div>
+                <h3>
+                  {row.customer_name}
+                </h3>
 
-              <div className="monthly-adjustment-customer">
-
-                <div>
-                  <strong>
-                    {row.customer_name}
-                  </strong>
+                <div className="monthly-customer-meta">
 
                   <span>
-                    Package {money(row.pt_amount)}
-                    {' · '}
-                    {row.duration_months}M
+                    Amount Paid{' '}
+                    <strong>
+                      {money(
+                        row.amount_paid
+                      )}
+                    </strong>
                   </span>
+
+                  <span>
+                    Package{' '}
+                    <strong>
+                      {money(
+                        row.pt_amount
+                      )}
+                    </strong>
+                  </span>
+
+                  <span>
+                    Duration{' '}
+                    <strong>
+                      {row.duration_months}{' '}
+                      {Number(
+                        row.duration_months
+                      ) === 1
+                        ? 'Month'
+                        : 'Months'}
+                    </strong>
+                  </span>
+
+                  <span>
+                    PT Dates{' '}
+                    <strong>
+                      {date(
+                        row.pt_start
+                      )}{' '}
+                      →{' '}
+                      {date(
+                        row.pt_end
+                      )}
+                    </strong>
+                  </span>
+
                 </div>
-
-                {row.is_overridden && (
-                  <span className="manual-adjusted-badge">
-                    MANUALLY ADJUSTED
-                  </span>
-                )}
-
               </div>
 
-              <div className="monthly-adjustment-values">
+              {row.is_overridden && (
+                <span className="monthly-manual-badge">
+                  MANUALLY ADJUSTED
+                </span>
+              )}
 
-                <div>
+            </div>
+
+
+            <div className="monthly-financial-grid">
+
+              <div className="monthly-value-box">
+                <span>
+                  This Month PT
+                </span>
+
+                <strong>
+                  {money(
+                    row.final_pt_amount
+                  )}
+                </strong>
+
+                <small>
+                  Calculated{' '}
+                  {money(
+                    row.monthly_pt_amount
+                  )}
+                </small>
+              </div>
+
+
+              <div className="monthly-value-box">
+                <span>
+                  JK Share
+                </span>
+
+                <strong>
+                  {money(
+                    row.final_admin_share
+                  )}
+                </strong>
+
+                <small>
+                  Calculated{' '}
+                  {money(
+                    row.monthly_admin_share
+                  )}
+                </small>
+              </div>
+
+
+              <div className="monthly-value-box">
+                <span>
+                  Trainer Share
+                </span>
+
+                <strong>
+                  {money(
+                    row.final_trainer_share
+                  )}
+                </strong>
+
+                <small>
+                  Calculated{' '}
+                  {money(
+                    row.monthly_trainer_share
+                  )}
+                </small>
+              </div>
+
+
+              <div className="monthly-value-box">
+                <span>
+                  Final Split
+                </span>
+
+                <strong>
+                  {finalSplit}
+                </strong>
+
+                <small>
+                  {row.is_overridden
+                    ? `Calculated ${calculatedSplit}`
+                    : row.gym_fee_paid
+                      ? 'Gym Paid'
+                      : 'Gym Not Paid'}
+                </small>
+              </div>
+
+            </div>
+
+
+            {row.is_overridden &&
+              row.override_notes && (
+                <div className="monthly-adjustment-note">
                   <span>
-                    PT Business
+                    Adjustment Note
                   </span>
 
                   <strong>
-                    {money(
-                      row.final_pt_amount
-                    )}
+                    {row.override_notes}
                   </strong>
-
-                  <small>
-                    Calculated{' '}
-                    {money(
-                      row.monthly_pt_amount
-                    )}
-                  </small>
                 </div>
+              )}
 
-                <div>
+
+            {editing && (
+              <div className="monthly-financial-editor">
+
+                <label>
+                  <span>
+                    This Month PT
+                  </span>
+
+                  <input
+                    type="number"
+                    min="0"
+                    value={form.pt}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        pt: e.target.value,
+                      })
+                    }
+                  />
+                </label>
+
+                <label>
                   <span>
                     JK Share
                   </span>
 
-                  <strong>
-                    {money(
-                      row.final_admin_share
-                    )}
-                  </strong>
+                  <input
+                    type="number"
+                    min="0"
+                    value={form.admin}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        admin:
+                          e.target.value,
+                      })
+                    }
+                  />
+                </label>
 
-                  <small>
-                    Calculated{' '}
-                    {money(
-                      row.monthly_admin_share
-                    )}
-                  </small>
-                </div>
-
-                <div>
+                <label>
                   <span>
                     Trainer Share
                   </span>
 
-                  <strong>
-                    {money(
-                      row.final_trainer_share
-                    )}
-                  </strong>
+                  <input
+                    type="number"
+                    min="0"
+                    value={form.trainer}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        trainer:
+                          e.target.value,
+                      })
+                    }
+                  />
+                </label>
 
-                  <small>
-                    Calculated{' '}
-                    {money(
-                      row.monthly_trainer_share
-                    )}
-                  </small>
-                </div>
+                <label className="monthly-note-input">
+                  <span>
+                    Adjustment note
+                  </span>
+
+                  <input
+                    type="text"
+                    placeholder="Reason for manual adjustment..."
+                    value={form.notes}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        notes:
+                          e.target.value,
+                      })
+                    }
+                  />
+                </label>
 
               </div>
+            )}
 
-              <div className="monthly-adjustment-actions">
 
+            <div className="monthly-financial-actions">
+
+              {!editing ? (
                 <button
                   type="button"
                   className="secondary-button"
                   onClick={() =>
-                    setEditing(row)
+                    beginEdit(row)
                   }
                 >
                   Edit Final Values
                 </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="primary-button"
+                    disabled={saving}
+                    onClick={() =>
+                      save(row)
+                    }
+                  >
+                    {saving
+                      ? 'Saving...'
+                      : 'Save Values'}
+                  </button>
 
-                {row.is_overridden && (
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={
+                      stopEdit
+                    }
+                    disabled={saving}
+                  >
+                    Cancel
+                  </button>
+                </>
+              )}
+
+              {row.is_overridden &&
+                !editing && (
                   <button
                     type="button"
                     className="text-button"
                     onClick={() =>
-                      resetOverride(row)
+                      reset(row)
                     }
+                    disabled={saving}
                   >
-                    <RotateCcw size={14} />
                     Reset
                   </button>
                 )}
 
-              </div>
-
-              {editing?.entry_id ===
-                row.entry_id && (
-                <div className="monthly-override-editor">
-
-                  <label>
-                    <span>
-                      Final PT Business
-                    </span>
-
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.pt}
-                      onChange={(e) =>
-                        setForm(
-                          (prev) => ({
-                            ...prev,
-                            pt:
-                              e.target.value,
-                          })
-                        )
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    <span>
-                      Final JK Share
-                    </span>
-
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.admin}
-                      onChange={(e) =>
-                        setForm(
-                          (prev) => ({
-                            ...prev,
-                            admin:
-                              e.target.value,
-                          })
-                        )
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    <span>
-                      Final Trainer Share
-                    </span>
-
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.trainer}
-                      onChange={(e) =>
-                        setForm(
-                          (prev) => ({
-                            ...prev,
-                            trainer:
-                              e.target.value,
-                          })
-                        )
-                      }
-                    />
-                  </label>
-
-                  <label className="monthly-override-notes">
-                    <span>
-                      Notes
-                    </span>
-
-                    <input
-                      value={form.notes}
-                      onChange={(e) =>
-                        setForm(
-                          (prev) => ({
-                            ...prev,
-                            notes:
-                              e.target.value,
-                          })
-                        )
-                      }
-                      placeholder="Reason for adjustment..."
-                    />
-                  </label>
-
-                  <div className="monthly-override-buttons">
-
-                    <button
-                      type="button"
-                      className="primary-button"
-                      disabled={saving}
-                      onClick={saveOverride}
-                    >
-                      <Save size={15} />
-
-                      {saving
-                        ? 'Saving...'
-                        : 'Save Final Values'}
-                    </button>
-
-                    <button
-                      type="button"
-                      className="secondary-button"
-                      onClick={() =>
-                        setEditing(null)
-                      }
-                    >
-                      Cancel
-                    </button>
-
-                  </div>
-
-                </div>
-              )}
-
             </div>
-          ))}
 
-        </div>
-      )}
+          </article>
+        )
+      })}
 
-    </section>
+    </div>
   )
 }

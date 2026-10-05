@@ -487,6 +487,20 @@ export default function AdminDashboard() {
       [monthlyFinancialRows]
     )
 
+  const monthlyFinancialByEntry =
+    useMemo(
+      () =>
+        Object.fromEntries(
+          monthlyFinancialRows.map(
+            (row) => [
+              row.entry_id,
+              row,
+            ]
+          )
+        ),
+      [monthlyFinancialRows]
+    )
+
 
   async function logout() {
     try {
@@ -1016,6 +1030,9 @@ export default function AdminDashboard() {
                 monthlyTrainerShareByEntry={
                   monthlyTrainerShareByEntry
                 }
+                monthlyFinancialByEntry={
+                  monthlyFinancialByEntry
+                }
                   entries={
                     activeMonthEntries.slice(
                       0,
@@ -1083,12 +1100,12 @@ export default function AdminDashboard() {
             <div className="desktop-member-view">
               <EntriesTable
                 entries={filteredEntries}
-                monthlyTrainerShareByEntry={Object.fromEntries(
-                  monthlyFinancialRows.map((row) => [
-                    row.entry_id,
-                    Number(row.final_trainer_share || 0),
-                  ])
-                )}
+                monthlyTrainerShareByEntry={
+                  monthlyTrainerShareByEntry
+                }
+                monthlyFinancialByEntry={
+                  monthlyFinancialByEntry
+                }
                 onEdit={setEditingEntry}
                 onCancel={cancelEntry}
                 onRestore={restoreEntry}
@@ -1393,6 +1410,7 @@ export default function AdminDashboard() {
 function EntriesTable({
   entries,
   monthlyTrainerShareByEntry = {},
+  monthlyFinancialByEntry = {},
   onEdit,
   onCancel,
   onRestore,
@@ -1507,20 +1525,73 @@ function EntriesTable({
               </td>
 
               <td>
-                <span className="split-pill">
+                {(() => {
+                  const financial =
+                    monthlyFinancialByEntry[
+                      entry.id
+                    ]
 
-                  {Number(entry.pt_amount || 0) > 0
-                    ? entry.gym_fee_paid
-                      ? '50 / 50'
-                      : '60 / 40'
-                    : '—'}
+                  const pt =
+                    Number(
+                      financial?.final_pt_amount ??
+                        entry.pt_amount ??
+                        0
+                    )
 
-                </span>
+                  const jk =
+                    Number(
+                      financial?.final_admin_share ??
+                        entry.admin_share ??
+                        0
+                    )
+
+                  const trainer =
+                    Number(
+                      financial?.final_trainer_share ??
+                        entry.trainer_share ??
+                        0
+                    )
+
+                  const totalShare =
+                    jk + trainer
+
+                  const jkPercent =
+                    totalShare > 0
+                      ? Math.round(
+                          (jk / totalShare) *
+                            100
+                        )
+                      : 0
+
+                  const trainerPercent =
+                    totalShare > 0
+                      ? 100 - jkPercent
+                      : 0
+
+                  return (
+                    <div className="split-display">
+                      <span className="split-pill">
+                        {pt > 0
+                          ? `${jkPercent} / ${trainerPercent}`
+                          : '—'}
+                      </span>
+
+                      {financial?.is_overridden && (
+                        <small className="manual-split-label">
+                          MANUAL
+                        </small>
+                      )}
+                    </div>
+                  )
+                })()}
               </td>
 
               <td>
                 {money(
-                  entry.admin_share
+                  monthlyFinancialByEntry[
+                    entry.id
+                  ]?.final_admin_share ??
+                    entry.admin_share
                 )}
               </td>
 

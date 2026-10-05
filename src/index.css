@@ -6406,3 +6406,19 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 }
+
+.split-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.manual-split-label {
+  font-size: 7px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: var(--jk-blue);
+  text-transform: uppercase;
+}

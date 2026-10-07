@@ -963,48 +963,12 @@ export default function AdminDashboard() {
               />
 
               <StatCard
-                label="Trainer Share"
-                value={money(
-                  jkFinance.trainer_payout_total
-                )}
-                subtext="PT payout this month"
-                icon={UserRound}
-              />
-
-              <StatCard
-                label="Carry-forward Deduction"
-                value={money(
-                  jkFinance.carry_forward_trainer_payout
-                )}
-                subtext="Old-package trainer payouts"
-                icon={Activity}
-              />
-
-              <StatCard
-                label="JK Before Salary"
-                value={money(
-                  jkFinance.jk_before_salary_change
-                )}
-                subtext="Business minus trainer share"
-                icon={Dumbbell}
-              />
-
-              <StatCard
-                label="Trainer Salary"
-                value={money(
-                  jkFinance.trainer_salary_total
-                )}
-                subtext="Monthly fixed salary"
-                icon={Banknote}
-              />
-
-              <StatCard
                 label="Trainer Total Payable"
                 value={money(
                   jkFinance.trainer_total_payable
                 )}
-                subtext="PT share + salary"
-                icon={Banknote}
+                subtext="Share + salary"
+                icon={UserRound}
               />
 
               <StatCard
@@ -1012,7 +976,7 @@ export default function AdminDashboard() {
                 value={money(
                   jkFinance.jk_net_change_after_salary
                 )}
-                subtext="After trainer share + salary"
+                subtext="This month's net"
                 icon={Activity}
               />
 

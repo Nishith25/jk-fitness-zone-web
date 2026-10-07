@@ -190,6 +190,9 @@ export default function AdminDashboard() {
   const [editingEntry, setEditingEntry] =
     useState(null)
 
+  const [financeEditingEntry, setFinanceEditingEntry] =
+    useState(null)
+
   const [renewingEntry, setRenewingEntry] =
     useState(null)
 
@@ -1098,12 +1101,12 @@ export default function AdminDashboard() {
                 monthlyFinancialByEntry={
                   monthlyFinancialByEntry
                 }
-                  entries={
-                    activeMonthEntries.slice(
-                      0,
-                      8
-                    )
-                  }
+                  entries={[...activeMonthEntries].sort(
+                    (a, b) =>
+                      new Date(b.joined_on || 0) -
+                      new Date(a.joined_on || 0)
+                  )}
+                  readOnly
                   onEdit={setEditingEntry}
                   onCancel={cancelEntry}
                   onRestore={restoreEntry}
@@ -1113,12 +1116,12 @@ export default function AdminDashboard() {
 
               <div className="mobile-member-view">
                 <MobileMemberCards
-                  entries={
-                    activeMonthEntries.slice(
-                      0,
-                      8
-                    )
-                  }
+                  entries={[...activeMonthEntries].sort(
+                    (a, b) =>
+                      new Date(b.joined_on || 0) -
+                      new Date(a.joined_on || 0)
+                  )}
+                  readOnly
                   onEdit={setEditingEntry}
                   onCancel={cancelEntry}
                   onRestore={restoreEntry}
@@ -1164,7 +1167,11 @@ export default function AdminDashboard() {
 
             <div className="desktop-member-view">
               <EntriesTable
-                entries={filteredEntries}
+                entries={[...filteredEntries].sort(
+                  (a, b) =>
+                    new Date(b.joined_on || 0) -
+                    new Date(a.joined_on || 0)
+                )}
                 monthlyTrainerShareByEntry={
                   monthlyTrainerShareByEntry
                 }
@@ -1172,6 +1179,7 @@ export default function AdminDashboard() {
                   monthlyFinancialByEntry
                 }
                 onEdit={setEditingEntry}
+                onFinanceEdit={setFinanceEditingEntry}
                 onCancel={cancelEntry}
                 onRestore={restoreEntry}
                 onRenew={setRenewingEntry}
@@ -1189,17 +1197,6 @@ export default function AdminDashboard() {
             </div>
 
           </section>
-        )}
-
-        {tab === 'members' && (
-          <MonthlyFinancialAdjustments
-            month={month}
-            rows={monthlyFinancialRows}
-            onChanged={async () => {
-              await reloadMonthlyFinancials()
-              await loadData()
-            }}
-          />
         )}
 
         {tab === 'trainers' && (
@@ -1388,6 +1385,61 @@ export default function AdminDashboard() {
 
       </main>
 
+      {financeEditingEntry && (
+        <div
+          className="finance-modal-backdrop"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setFinanceEditingEntry(null)
+            }
+          }}
+        >
+          <div className="finance-modal">
+
+            <div className="finance-modal-heading">
+              <div>
+                <span className="section-kicker">
+                  MONTHLY FINANCE
+                </span>
+
+                <h2>
+                  {financeEditingEntry.customer_name}
+                </h2>
+
+                <p className="section-subtext">
+                  Final values for {month}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="icon-button"
+                onClick={() =>
+                  setFinanceEditingEntry(null)
+                }
+              >
+                <XCircle size={18} />
+              </button>
+            </div>
+
+            <MonthlyFinancialAdjustments
+              selectedMonth={month}
+              rows={monthlyFinancialRows.filter(
+                (row) =>
+                  row.entry_id ===
+                  financeEditingEntry.id
+              )}
+              onChanged={async () => {
+                await reloadMonthlyFinancials()
+                await reloadJkFinance()
+                await loadData()
+              }}
+            />
+
+          </div>
+        </div>
+      )}
+
       <AddEntryModal
         open={modalOpen}
 
@@ -1476,7 +1528,9 @@ function EntriesTable({
   entries,
   monthlyTrainerShareByEntry = {},
   monthlyFinancialByEntry = {},
+  readOnly = false,
   onEdit,
+  onFinanceEdit,
   onCancel,
   onRestore,
   onRenew,
@@ -1509,7 +1563,9 @@ function EntriesTable({
             <th>Paid</th>
             <th>Status</th>
             <th>Membership</th>
-            <th>Actions</th>
+            {!readOnly && (
+              <th>Actions</th>
+            )}
           </tr>
         </thead>
 
@@ -1698,6 +1754,8 @@ function EntriesTable({
               <td>
                 <MembershipStatusCell entry={entry} />
               </td>
+              {!readOnly && (
+
 
               <td>
                 <div className="table-actions">
@@ -1711,6 +1769,15 @@ function EntriesTable({
                         }
                       >
                         <RefreshCw size={15} />
+                      </button>
+
+                      <button
+                        title="Monthly finance"
+                        onClick={() =>
+                          onFinanceEdit?.(entry)
+                        }
+                      >
+                        <Banknote size={15} />
                       </button>
 
                       <button
@@ -1747,6 +1814,8 @@ function EntriesTable({
 
                 </div>
               </td>
+              )}
+
 
             </tr>
           ))}
